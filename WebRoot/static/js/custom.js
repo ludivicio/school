@@ -55,13 +55,17 @@ $(document).ready(function() {
 
 });
 
-
+// 窗口大小发生变化时，重新计算高度
 $(window).resize(autosize);
 
+// 页面载入完成时，重新计算高度
 $(document).ready(function() {
     autosize();
 });
 
+/**
+ * 重新计算浏览器的高度
+ */
 function autosize(){
     var webBodyHeight = getBodySize("h");
     
@@ -83,3 +87,39 @@ function getBodySize(data) {
     bodySize['h'] = ($(document.body).height()>$(window).height())? $(document.body).height():$(window).height();
     return data ? bodySize[data] : bodySize;
 }
+
+
+$(document).ready(function() {
+    
+	// 退出登录
+	$('.logout').click(function() {
+		
+		art.dialog({
+			title : '退出系统',
+			content : '<span style="font-size:20px; ">确定要退出本系统吗？</span>',
+			width : 250,
+			height : 100,
+			lock : true,
+			fixed : true,
+			okValue : '确定',
+			ok : function() {
+				window.location.href = LOGOUT_URL;
+			},
+			cancelValue : '取消',
+			cancel : true
+		});
+
+	});
+	
+	
+	
+});
+
+
+
+
+
+
+
+
+

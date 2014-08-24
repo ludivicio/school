@@ -13,7 +13,12 @@ import com.jfinal.core.Controller;
 public class HomeController extends Controller {
 
 	public void index() {
-
+		
+		System.out.println("here");
+		
+		setAttr("title", "首页");
+		
+		render("index.html");
 	}
 
 }

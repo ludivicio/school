@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 21, 2014 at 05:34 PM
+-- Generation Time: Aug 24, 2014 at 01:17 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tuuid`) VALUES
-(1, 'admin', 'admin', 1, '1407836973920', NULL),
+(1, 'admin', 'admin', 1, '1408885010799', NULL),
 (2, '1', '1', 5, '1407894986555', NULL);
 
 -- --------------------------------------------------------
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `assign` (
   `cuuid` varchar(8) NOT NULL COMMENT '课程编号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学期排课表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学期排课表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `class` (
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `course` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='课程表' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='课程表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `grade` (
   `name` varchar(45) NOT NULL COMMENT '名称',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='年级表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='年级表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -124,24 +124,21 @@ CREATE TABLE IF NOT EXISTS `permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='权限表' AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='权限表' AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `permission`
 --
 
 INSERT INTO `permission` (`id`, `name`, `url`, `pid`) VALUES
-(1, '我的信息', NULL, 0),
-(2, '学校信息管理', NULL, 0),
-(3, '班级信息管理', NULL, 0),
-(4, '教师信息管理', NULL, 0),
-(5, '学生信息管理', NULL, 0),
-(6, '学期管理', NULL, 0),
-(7, '课程管理', NULL, 0),
-(8, '学期课程分配', NULL, 0),
-(9, '成绩管理', NULL, 0),
-(10, '基本信息', '/admin/myinfo', 1),
-(11, '修改密码', '/admin/myinfo/password', 1),
+(2, '学校信息管理', '/admin/school', 0),
+(3, '班级信息管理', '/admin/class', 0),
+(4, '教师信息管理', '/admin/teacher', 0),
+(5, '学生信息管理', '/admin/student', 0),
+(6, '学期管理', '/admin/term', 0),
+(7, '课程管理', '/admin/course', 0),
+(8, '学期课程分配', '/admin/assign', 0),
+(9, '成绩管理', '/admin/score', 0),
 (12, '学校列表', '/admin/school/index', 2),
 (13, '录入学校信息', '/admin/school/add', 2),
 (14, '班级列表', '/admin/class/index', 3),
@@ -169,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `remark` varchar(45) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='角色表' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='角色表' AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `role`
@@ -196,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
 -- Dumping data for table `role_permission`
 --
 
-INSERT INTO `role_permission` (`roleId`, `permissionId`) VALUES
+INSERT INTO `role_permission` (`rid`, `pid`) VALUES
 (1, 1),
 (1, 2),
 (1, 3),
@@ -242,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `school` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学校信息表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学校信息表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -258,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `score` (
   `score` int(11) NOT NULL COMMENT '分数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学生成绩表' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学生成绩表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -286,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学生信息表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学生信息表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -319,7 +316,7 @@ CREATE TABLE IF NOT EXISTS `teacher` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='教师信息表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='教师信息表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -334,7 +331,7 @@ CREATE TABLE IF NOT EXISTS `term` (
   `end` varchar(45) DEFAULT NULL COMMENT '学期结束时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学期表' AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学期表' AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -10,7 +10,7 @@ public class LoginValidator extends Validator {
 
 	protected void validate(Controller controller) {
 
-		validateRequiredString("username", "nameMsg", "账号不能为空！");
+		validateRequiredString("account", "accountMsg", "账号不能为空！");
 		validateRequiredString("password", "passwordMsg", "密码不能为空！");
 
 	}

@@ -236,7 +236,7 @@ body{
 	margin-left: 200px;
 	margin-right: 0px;
 	width: auto;
-	background: #eee url("../image/main-back.png") repeat;
+	background: #eee;
 	border-left: 1px solid #ccc;
 	z-index: 50;
 	min-height: 600px;
@@ -245,6 +245,19 @@ body{
 .mainbar .container{
     max-width:100% !important;
 	width: 100% !important;
+}
+
+.breadcrumb {
+	margin-bottom: 0;
+	border-radius: 0;
+	padding: 15px;
+	background: #454545;
+}
+
+
+.matter {
+	position: relative;
+	top: 5px;
 }
 
 /* Responsive */

@@ -1,5 +1,10 @@
 package my.school.controller;
 
+import java.util.List;
+
+import my.school.model.Admin;
+import my.school.model.Permission;
+import my.school.model.Role;
 import my.school.validator.LoginValidator;
 
 import com.jfinal.aop.Before;
@@ -9,18 +14,31 @@ import com.jfinal.core.Controller;
 
 /**
  * IndexController
- * 
- * 所有 sql 写在 Model 或 Service 中，不要写在 Controller 中，养成好习惯，有利于大型项目的开发与维护
  */
 public class IndexController extends Controller {
 
 	public void index() {
 
+		setAttr("title", "学籍管理系统");
+
+		String userName = "";
+		Admin admin = getSessionAttr("admin");
+		if (admin != null) {
+			userName = admin.get("account");
+		}
+
+		setAttr("userName", userName);
+		setAttr("roleName", getSessionAttr("roleName"));
+		setAttr("permissions", getSessionAttr("permissions"));
+		
+		// 重定向到 我的信息
+		redirect("/admin/myinfo/index.html");
 	}
 
 	@ClearInterceptor(ClearLayer.ALL)
 	public void login() {
-		render("/admin/login.html");
+
+		render("login.html");
 	}
 
 	@ClearInterceptor(ClearLayer.ALL)
@@ -29,6 +47,52 @@ public class IndexController extends Controller {
 
 		// 处理登录
 
+		String account = getPara("account");
+		String password = getPara("password");
+
+		getSession().removeAttribute("admin");
+		getSession().removeAttribute("roleName");
+		getSession().removeAttribute("permissions");
+
+		Admin admin = Admin.dao.getByAccountAndPassword(account, password);
+
+		Role role = null;
+		List<Permission> permissions = null;
+
+		if (admin != null) {
+
+			role = admin.getRole();
+			permissions = admin.getPermissions();
+
+			// 登录时间戳
+			long time = System.currentTimeMillis();
+			admin.set("time", String.valueOf(time));
+			admin.update();
+
+			setSessionAttr("admin", admin);
+
+			if (permissions != null && permissions.size() > 0) {
+
+				for (Permission p : permissions) {
+					p.initSubPermissions();
+				}
+
+			}
+
+			setSessionAttr("roleName", role.getStr("name"));
+			setSessionAttr("permissions", permissions);
+
+			redirect("index.html");
+
+		} else {
+
+			setAttr("errorMsg", "用户名或密码错误！");
+
+			keepPara("account");
+
+			render("login.html");
+		}
+
 	}
 
 	/**
@@ -36,13 +100,9 @@ public class IndexController extends Controller {
 	 */
 	public void logout() {
 		getSession().removeAttribute("admin");
-		getSession().removeAttribute("doctor");
 		getSession().removeAttribute("roleName");
 		getSession().removeAttribute("permissions");
-		redirect("/admin/index");
+		redirect("login.html");
 	}
 
-	public void welcome() {
-		render("welcome.html");
-	}
 }

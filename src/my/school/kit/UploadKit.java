@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import my.school.config.CoreConstants;
+import my.school.config.Constants;
 
 import com.jfinal.kit.PathKit;
 
@@ -21,7 +21,7 @@ public class UploadKit {
 	public static String saveAvatarImage(File file) {
 
 		String contextPath = PathKit.getWebRootPath();
-		String filePath = contextPath + CoreConstants.ATTACHMENT_AVATAR_PATH;
+		String filePath = contextPath + Constants.ATTACHMENT_AVATAR_PATH;
 
 		// 路径不存在的话，创建该路径
 		UploadKit.createDirectory(new File(filePath));
@@ -40,7 +40,7 @@ public class UploadKit {
 		}
 
 		// 保存在数据库中的路径
-		String savePath = CoreConstants.ATTACHMENT_AVATAR_PATH + newFileName;
+		String savePath = Constants.ATTACHMENT_AVATAR_PATH + newFileName;
 
 		return savePath;
 
@@ -48,7 +48,7 @@ public class UploadKit {
 
 	public static String saveUploadImage(File file) {
 		String contextPath = PathKit.getWebRootPath();
-		String filePath = contextPath + CoreConstants.ATTACHMENT_IMAGE_PATH;
+		String filePath = contextPath + Constants.ATTACHMENT_IMAGE_PATH;
 
 		// 路径不存在的话，创建该路径
 		UploadKit.createDirectory(new File(filePath));
@@ -67,7 +67,7 @@ public class UploadKit {
 		}
 
 		// 保存在数据库中的路径
-		String savePath = CoreConstants.ATTACHMENT_IMAGE_PATH + newFileName;
+		String savePath = Constants.ATTACHMENT_IMAGE_PATH + newFileName;
 
 		return savePath;
 	}

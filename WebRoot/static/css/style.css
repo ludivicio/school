@@ -1,0 +1,151 @@
+
+
+body{
+	font-size: 12px;
+	line-height: 22px;
+	height: 100%;
+	font: 12px/100% '微软雅黑', Verdana, Geneva, sans-serif;
+	color: #666;
+	border-top: 3px solid #eee;
+	background:#343434 url("../image/cream.png") repeat;  
+	padding-top: 37px;
+	-webkit-font-smoothing: antialiased;
+}
+
+
+/* Widget */
+
+.widget {
+  border: 1px solid #c9c9c9;
+  border-radius: 3px;
+  margin-top: 10px;
+  margin-bottom: 20px; 
+  background: #fafafa url('../image/cream.png') repeat;
+}
+
+.widget p{
+	margin: 3px 0px 5px 0px !important;
+	line-height: 20px;
+}
+
+.widget hr{
+	margin: 8px 0px;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #fff;
+}
+
+.widget .table{
+	margin: 0px;
+	width: 100%;
+}
+
+.widget .table .btn{
+	font-size: 11px !important;
+}
+
+.widget .table-bordered{
+	border-radius: 0px;
+	border: 0px;
+}
+
+.widget .table-bordered th{
+	border-bottom: 1px solid #ddd !important;
+}
+
+.widget .table-bordered td{
+	border-top: 0px !important;
+	border-bottom: 1px solid #ddd !important;
+	border-radius: 0px !important;
+}
+
+.widget .table-bordered td:first-child, .widget .table-bordered th:first-child{
+	border-left: 0px;
+}
+
+.widget .table-bordered thead:first-child tr:first-child > th:first-child, 
+.widget .table-bordered tbody:first-child tr:first-child > td:first-child {
+	border-radius: 0px;
+}
+
+
+.widget .widget-head{
+    background-color: #f8f8f8;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f2f2f2));
+    background: -webkit-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -moz-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -ms-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -o-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: linear-gradient(top, #f8f8f8, #f2f2f2);	
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    text-shadow:0px 1px #fff;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #fff;
+	  color: #666;
+	  font-size: 13px;
+	  font-weight: bold;
+    padding: 12px 15px;
+}
+
+
+.widget .widget-head .widget-icons i{
+	  font-size: 14px;
+	  margin: 0px 4px;
+}
+
+.widget .widget-head .widget-icons a{
+	  color: #aaa;
+}
+
+.widget .widget-head .widget-icons a:hover{
+	  color: #999;
+}
+
+.widget.wblack .widget-head .widget-icons i{
+	  font-size: 14px;
+	  margin: 0px 4px;
+}
+
+.widget .widget-content {
+ 
+} 
+
+.widget .padd{
+  padding: 13px 15px 0;
+}
+
+.widget .widget-foot{
+    position: relative;
+    background-color: #f8f8f8;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f2f2f2));
+    background: -webkit-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -moz-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -ms-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: -o-linear-gradient(top, #f8f8f8, #f2f2f2);
+    background: linear-gradient(top, #f8f8f8, #f2f2f2);	
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    text-shadow:0px 1px #fff;
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #ccc;
+    padding: 12px 15px;
+    font-size: 12px;
+    color: #555;
+    box-shadow: inset 0px 1px 1px #fff;
+}
+
+
+/* Login and Register form */
+
+.admin-form{
+	  max-width: 500px;
+	  margin: 50px auto;
+}
+
+
+
+
+
+
+
+

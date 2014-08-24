@@ -1,6 +1,6 @@
 package my.school.config;
 
-public class CoreConstants {
+public class Constants {
 
 	// 每页数据条数
 	public static final int PAGE_SIZE = 15;

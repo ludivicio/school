@@ -1,22 +1,29 @@
 package my.school.config;
 
+import my.school.beetl.function.ExistFunction;
 import my.school.interceptor.SessionInterceptor;
 import my.school.model.Admin;
-import my.school.model.Grade;
+import my.school.model.Assign;
 import my.school.model.Class;
-import my.school.model.Permission;
 import my.school.model.Course;
-import my.school.model.School;
-import my.school.model.Teacher;
+import my.school.model.Grade;
+import my.school.model.Permission;
 import my.school.model.Role;
 import my.school.model.RolePermission;
+import my.school.model.School;
 import my.school.model.Score;
 import my.school.model.Student;
-import my.school.model.Assign;
+import my.school.model.Teacher;
 import my.school.model.Term;
 import my.school.routes.AdminRoutes;
 import my.school.routes.HomeRoutes;
 
+import org.bee.tl.core.GroupTemplate;
+import org.bee.tl.ext.EmptyFunction;
+import org.bee.tl.ext.jfinal.BeetlRenderFactory;
+
+import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -27,7 +34,8 @@ import com.jfinal.ext.handler.ContextPathHandler;
 import com.jfinal.ext.handler.FakeStaticHandler;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
-import com.jfinal.plugin.c3p0.C3p0Plugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.druid.DruidStatViewHandler;
 
 /**
  * API引导式配置
@@ -40,10 +48,22 @@ public class CoreConfig extends JFinalConfig {
 	public void configConstant(Constants me) {
 		// 加载少量必要配置，随后可用getProperty(...)获取值
 		loadPropertyFile("db_config.txt");
+
 		me.setDevMode(getPropertyToBoolean("devMode", false));
 
-		me.setError404View("/error/404.html");
-		// me.setError500View("/error/500.html");
+		// me.setError404View("/error/404.html");
+
+		// 使用beetl作为渲染引擎
+		me.setMainRenderFactory(new BeetlRenderFactory());
+
+		// 获取GroupTemplate ,可以设置共享变量等操作
+		GroupTemplate groupTemplate = BeetlRenderFactory.groupTemplate;
+
+		groupTemplate.registerFunction("empty", new EmptyFunction());
+		
+		// 注册自定义方法
+		groupTemplate.registerFunction("exist", new ExistFunction());
+
 	}
 
 	/**
@@ -59,13 +79,19 @@ public class CoreConfig extends JFinalConfig {
 	 */
 	public void configPlugin(Plugins me) {
 
-		// 配置C3p0数据库连接池插件
-		C3p0Plugin c3p0Plugin = new C3p0Plugin(getProperty("jdbcUrl"),
-				getProperty("user"), getProperty("password").trim());
-		me.add(c3p0Plugin);
+		// DruidPlugin
+		DruidPlugin dp = new DruidPlugin(getProperty("jdbcUrl"), getProperty("user"),
+				getProperty("password"));
+
+		dp.addFilter(new StatFilter());
+		WallFilter wall = new WallFilter();
+		wall.setDbType("mysql");
+		dp.addFilter(wall);
+		me.add(dp);
 
 		// 配置ActiveRecord插件
-		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
+		ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
+
 		arp.setShowSql(true);
 
 		me.add(arp);
@@ -103,12 +129,14 @@ public class CoreConfig extends JFinalConfig {
 	 * 配置处理器
 	 */
 	public void configHandler(Handlers me) {
-		
+
 		// 配置伪静态
 		me.add(new FakeStaticHandler());
-		
+
 		// 配置上下文路径
 		me.add(new ContextPathHandler());
+
+		me.add(new DruidStatViewHandler("/druid"));
 	}
-	
+
 }

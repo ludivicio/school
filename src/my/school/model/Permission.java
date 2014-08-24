@@ -3,33 +3,41 @@ package my.school.model;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Page;
 
 /**
  * Permission model.
  * 
- * 所有 sql 写在 Model 或 Service 中，不要写在 Controller 中，养成好习惯，有利于大型项目的开发与维护
  */
 
 @SuppressWarnings("serial")
 public class Permission extends Model<Permission> {
 	public static final Permission dao = new Permission();
 
-	public List<Permission> subPermissions;
+	private List<Permission> subPermissions;
+	
+	/**
+	 * 获取子权限
+	 * 
+	 * @return
+	 */
+	public List<Permission> initSubPermissions() {
 
-	public List<Permission> initializeSubPermissions() {
-
-		if (subPermissions != null) {
-			return subPermissions;
+		if(getSubPermissions() == null) {
+			
+			String sql = "select * from permission where pid = ? order by id asc";
+			setSubPermissions(Permission.dao.find(sql, get("id"))); 
+			
 		}
 
-		String sql = "select * from permission where pid = ? order by id asc";
-		subPermissions = Permission.dao.find(sql, get("id"));
+		return getSubPermissions();
+	}
 
+	public List<Permission> getSubPermissions() {
 		return subPermissions;
 	}
 
-	public Page<Permission> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *", "from blog order by id asc");
+	public void setSubPermissions(List<Permission> subPermissions) {
+		this.subPermissions = subPermissions;
 	}
+
 }

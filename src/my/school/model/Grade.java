@@ -2,7 +2,7 @@ package my.school.model;
 
 import java.util.List;
 
-import my.school.config.CoreConstants;
+import my.school.config.Constants;
 
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
@@ -54,7 +54,7 @@ public class Grade extends Model<Grade> {
 	 * @return
 	 */
 	public List<Grade> getRecommends() {
-		return Grade.dao.find("select * from department where recommend = 1 order by sort desc limit 0, ?", CoreConstants.RECOMMEND_DEPARTMENT_SIZE);
+		return Grade.dao.find("select * from department where recommend = 1 order by sort desc limit 0, ?", Constants.RECOMMEND_DEPARTMENT_SIZE);
 	}
 	
 	

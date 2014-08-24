@@ -2,7 +2,7 @@ package my.school.model;
 
 import java.util.List;
 
-import my.school.config.CoreConstants;
+import my.school.config.Constants;
 
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
@@ -70,7 +70,7 @@ public class Class extends Model<Class> {
 	public List<Class> getRecommends() {
 		return Class.dao
 				.find("select * from doctor where recommend = 1 order by sort desc limit 0, ?",
-						CoreConstants.RECOMMEND_DOCTOR_SIZE);
+						Constants.RECOMMEND_DOCTOR_SIZE);
 	}
 
 	/**

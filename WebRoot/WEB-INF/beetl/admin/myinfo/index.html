@@ -1,0 +1,125 @@
+## layout("/admin/common/_layout.html") {
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
+			<!-- Widget title -->
+			<div class="widget-head">
+				<div class="pull-left">我的信息</div>
+
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
+				<table class="table table-bordered table-hover">
+					<tr>
+						<td>账号</td>
+						<td><span>${admin.account}</span>&nbsp; <a href="javascript:void()"
+							class="btn btn-info update-password">修改密码</a></td>
+					</tr>
+					<tr>
+						<td>角色</td>
+						<td>${admin.roleName}</td>
+					</tr>
+					<tr>
+						<td>登录时间</td>
+						<td>${time}</td>
+					</tr>
+				</table>
+				<div class="widget-foot"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="form quick-post" style="display:none">
+	<form class="form-horizontal" action="${CONTEXT_PATH}/myinfo/update" method="post">
+
+		<div class="form-group">
+			<label class="control-label col-lg-4" for="oldPassword">原密码</label>
+			<div class="col-lg-8">
+				<input type="password" class="form-control" name="oldPassword">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-4" for="newPassword">新密码</label>
+			<div class="col-lg-8">
+				<input type="password" class="form-control" name="newPassword">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-4" for="newPassword2">确认新密码</label>
+			<div class="col-lg-8">
+				<input type="password" class="form-control" name="newPassword2">
+			</div>
+		</div>
+		
+		<div class="form-group result-tip" style="display:none">
+			<div class="col-lg-8 col-lg-offset-4">
+				<span class="help-block"></span>
+			</div>
+		</div>
+		
+	</form>
+</div>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+		$('.update-password').click(function() {
+			
+			$('.result-tip').css('display', 'none');
+			$('.help-block').text('');
+			
+			art.dialog({
+				title: "修改密码",
+			    content: $('.quick-post').html(),
+			    width: 350,
+			    ok: function () {
+			    	
+			    	$.ajax({
+			    		url: "${CONTEXT_PATH}/admin/myinfo/update",
+			    		
+			    		data: {
+			    			oldPassword: $('input[name="oldPassword"]').val(),
+			    			newPassword: $('input[name="newPassword"]').val(),
+			    			newPassword2: $('input[name="newPassword2"]').val()
+			    		},
+			    	
+						success: function(data) {
+
+							$('.result-tip').css('display', 'block');
+							$('.help-block').text(data.msg);
+							
+							if(data.status == "error") {
+								
+								$('.result-tip').removeClass('has-success');
+								$('.result-tip').addClass('has-error');
+								
+							} else if(data.status == "success") {
+								
+								$('.result-tip').removeClass('has-error');
+								$('.result-tip').addClass('has-success');
+							}
+			    		}
+			    	});
+			    	
+			    	return false;
+			    },
+			    
+			    cancelVal: '返回',
+			    cancel: true 
+			});
+			
+		});
+		
+	});
+
+</script>
+
+## }
+
