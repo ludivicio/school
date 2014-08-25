@@ -1,6 +1,21 @@
 package my.school.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import my.school.kit.ParamUtil;
+import my.school.kit.FileUtil;
+import my.school.model.School;
+import my.school.config.Constants;
+import my.school.validator.SaveSchoolValidator;
+import my.school.kit.ParaKit;
+
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
 
 /**
  * SchoolController
@@ -13,6 +28,27 @@ public class SchoolController extends Controller {
 	
 	public void index() {
 		
+		// 判断当前是否是搜索的数据进行的分页
+		// 如果是搜索的数据，则跳转至search方法处理
+		if (!ParamUtil.isEmpty(getPara("s"))) {
+
+			search();
+
+			return;
+		}
+
+		int page = ParamUtil.paramToInt(getPara("p"), 1);
+
+		if (page < 1) {
+			page = 1;
+		}
+		// 读取所有的科室信息。
+		Page<School> schoolList = School.dao.paginate(page, Constants.PAGE_SIZE);
+		setAttr("schoolList", schoolList);
+		setAttr("searchUuid", "");
+		setAttr("searchName", "");
+		setAttr("searchRecotr", "");
+		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 		
 		render("index.html");
 	}
@@ -24,17 +60,104 @@ public class SchoolController extends Controller {
 	/**
 	 * 搜索
 	 */
+	/**
+	 * 搜索
+	 */
 	public void search() {
+
+		if (ParamUtil.isEmpty(getPara("s"))) {
+
+			// 说明当前请求是搜索数据的post请求，并非搜索的分页请求
+			// 在这里执行搜索操作，并将结果保存到缓存中
+
+			Map<String, String> queryParams = new HashMap<String, String>();
+			queryParams.put("uuid", getPara("uuid"));
+			queryParams.put("rector", getPara("recotr"));
+			queryParams.put("name", getPara("name"));
+			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
+
+		}
+
+		int page = ParamUtil.paramToInt(getPara("p"), 1);
+
+		if (page < 1) {
+			page = 1;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("from school where id > 0");
+
+		HashMap<String, String> queryParams = getSessionAttr(Constants.SEARCH_SESSION_KEY);
+		List<Object> params = new ArrayList<Object>();
+
+		if (queryParams != null) {
+
+			String uuid = queryParams.get("uuid");
+
+			if (!ParamUtil.isEmpty(uuid)) {
+				sb.append(" and uuid like ?");
+				params.add("%" + uuid + "%");
+			}
+			
+			String name = queryParams.get("name");
+
+			if (!ParamUtil.isEmpty(name)) {
+				sb.append(" and name like ?");
+				params.add("%" + name + "%");
+			}
+			
+
+			
+			String rector = queryParams.get("rector");
+
+			if (!ParamUtil.isEmpty(rector)) {
+				sb.append(" and rector like ?");
+				params.add("%" + rector + "%");
+			}
+			
+			
+			setAttr("searchUuid", uuid);
+			setAttr("searchName", name);
+			setAttr("searchRecotr", rector);
+			setAttr("searchPage", Constants.SEARCH_PAGE);
+
+		}
+
+		// 医生列表
+		Page<School> schoolList = School.dao.paginate(page, Constants.PAGE_SIZE,
+				"select *", sb.toString(), params.toArray());
+
+		setAttr("schoolList", schoolList);
 
 		render("index.html");
 
 	}
 
+
 	/**
 	 * 添加/修改科室信息处理方法
 	 */
+	@Before(SaveSchoolValidator.class)
 	public void save() {
 
+		UploadFile file = getFile("school.image", Constants.ATTACHMENT_TEMP_PATH, Constants.MAX_FILE_SIZE);
+
+		// 保存文件并获取保存在数据库中的路径
+		String savePath = FileUtil.saveAvatarImage(file.getFile());
+
+		School school = getModel(School.class);
+		
+		System.out.println("savePath: " + savePath);
+		
+		// 设置头像路径
+		school.set("image", savePath);
+		
+		if (null == school.getInt("id")) {
+			school.set("uuid", ParaKit.getUUID());
+			school.save();
+		} else {
+			school.update();
+		}
 		redirect("index.html");
 	}
 
@@ -43,7 +166,8 @@ public class SchoolController extends Controller {
 	 * 
 	 */
 	public void edit() {
-		
+		int schoolId = getParaToInt(0);
+		setAttr("school", School.dao.findById(schoolId));
 		render("add.html");
 	}
 
@@ -51,8 +175,15 @@ public class SchoolController extends Controller {
 	 * 删除科室信息
 	 */
 	public void delete() {
-		
-		redirect("index.html");
+		int schoolId = ParamUtil.paramToInt(getPara(0), -1);
+
+		if(schoolId > -1) {
+			if(School.dao.deleteById(schoolId)) {
+				renderJson("msg", "删除成功！");	
+			}
+		} else {
+			renderJson("msg", "删除失败！");
+		}
 		
 	}
 

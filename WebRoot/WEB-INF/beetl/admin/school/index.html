@@ -1,7 +1,86 @@
 ## layout("/admin/common/_layout.html") {
 
+	<script type="text/javascript">
+		function del(url){
+			if(confirm('您确定要删除本学校信息？')) {
+				
+				$.get(url, function(data) {
+					alert(data.msg);
+					location.reload();
+				});
+			}
+		 }
+	</script>
+	<div class="search-box">
+		<form name="searchForm" action="/admin/school/search" method="post">
+			<span> 
+				 学校编号：
+				<input type="text" name="name" id="uuid" value="${searchUuid!}" />&nbsp;
+			           学校名称：
+				<input type="text" name="name" id="name" value="${searchName!}" />&nbsp;
+				校长名称:<input type="text" name="rector" id="rector" value="${searchRector!}"/>
+				<input type="submit" name="subButton" id="subButton" value="查询" />		
+			</span>
+		</form>
+	</div>
+	
+	<div class="data-box">
+		<table class="table table-bordered table-hover">
+			<thead>
+				<th>学校图片</th>
+				<th width="40">学校编号</th>
+				<th width="6">学校名称</th>
+				<th width="60">学校级别</th>
+				<th>学校地址</th>
+				<th width="60">校长姓名</th>
+				<th width="60">电话</th>
+				<th width="60">传真</th>
+				<th width="60">网址</th>
+				<th width="60">电子邮箱</th>
+				<th width="60">学校类型</th>
+				<th width="120">操作</th>
+				
+			</thead>
+			<tbody>
+				## for(school in schoolList.list!){
+					<tr>
+						<td align="center"><img src="${school.image!}" onload="resizeImage(this, 70, 70);" /></td>
+						<td align="center">${school.uuid!}</td>
+						<td align="center">${school.name!}</td> 
+						<td>
+							##if(school.level! ==0){
+								小学
+							##}
+							##if(school.level! == 1){
+							初中
+							##}
+						</td> 
+						<td>${school.address!}</td> 
+						<td>${school.rector!}</td> 
+						<td>${school.phone!}</td> 
+						<td>${school.fax!}</td> 
+						<td>${school.web!}</td> 
+						<td>${school.emial!}</td> 
+						<td>
+						    ##if(school.kind! ==0){
+								私立
+							##}
+							
+							##if(school.kind! == 1){
+								公立
+							##}
+						</td> 
+						<td align="center">
+							<a href="/admin/school/edit/${school.id!}">编辑</a>
+							&nbsp;&nbsp;
+							<a href="javascript:void(0)" onclick="del('/admin/school/delete/${school.id!}')">删除</a>
+						</td>
+					</tr>
+				##}
+			</tbody>
+		</table>
+	</div>
 
-中文测试
 
 
 

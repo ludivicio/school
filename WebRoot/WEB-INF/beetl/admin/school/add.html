@@ -1,8 +1,116 @@
 ## layout("/admin/common/_layout.html") {
+	<form class="form-horizontal" action="${CONTEXT_PATH}/admin/school/save" method="post"  enctype="multipart/form-data" >
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="a"></label>
+			<div class="col-lg-6">
+			
+			</div>
+			<label class="control-label col-lg-2" for="a"></label>
+			<div class="col-lg-2">
+				
+			</div>
+		</div>
+		<input type="hidden" value="${school.id!}" name="school.id"/>
+		<div class="form-group">
+			
+			<label class="control-label col-lg-2" for="school.name">学校名称：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.name" value="${school.name!}">
+				
+				<span style="color:red">*${nameMsg!}</span>
+				
+			</div>
+			<label class="control-label col-lg-2" for="school.desc">学校介绍：</label>
+			<div class="col-lg-4">
+				<textarea class="form-control" name="school.desc">${school.desc!}</textarea>
+				
+				<span style="color:red">*${descMsg!}</span>
+				
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="school.level">学校级别：</label>
+			<div class="col-lg-4">
+				<select class="form-control" name="school.level">
+					##if(school.level! ==0){
+					<option value="0" checked="checked">小学</option>
+					<option value="1">中学</option>
+					##}
+					##if(school.level! ==1){
+					<option value="0" >小学</option>
+					<option value="1" checked="checked">中学</option>
+					##}
+					##if(school.level! ==null){
+					<option value="0">小学</option>
+					<option value="1">中学</option>
+					##}
 
+				</select>			
+			</div>
+			<label class="control-label col-lg-2" for="school.address">学校地址：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.address" value="${school.address!}">
+			</div>
+			<span style="color:red">*${addressMsg!}</span>
+		</div>
 
-中文测试
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="school.rector">校长姓名：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.rector" value="${school.rector!}">
+			</div>
+			<span style="color:red">*${rectorMsg!}</span>
+			<label class="control-label col-lg-2" for="school.phone">电 　　话：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.phone" value="${school.phone!}">
+			</div>
+			<span style="color:red">*${phoneMsg!}</span>
+		</div>
 
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="school.fax">传　　真：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.fax" value="${school.fax!}">
+			</div>
+			<label class="control-label col-lg-2" for="school.web">网 　　址：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.web" value="${school.web!}">
+			</div>
+		</div>
 
-
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="school.email">邮　　箱：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="school.email" value="${school.email!}">
+			</div>
+			<label class="control-label col-lg-2" for="school.kind">类 　　别：</label>
+			<div class="col-lg-4">
+				<select class="form-control" name="school.kind" value="{school.kind!}">
+					<option value="0">公立</option>
+					<option value="1">私立</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="school.image">图　　片：</label>
+			<div class="col-lg-4">
+				<input type="file" class="form-control" name="school.image" value="${school.image!}">
+				
+				<span style="color:red">*${imageMsg!}</span>
+				
+			</div>
+			<label class="control-label col-lg-2" for="abdedd"></label>
+			<div class="col-lg-4">
+			</div>
+		</div>
+		
+		<center>
+    			<button type="submit" class="btn btn-primary">提　交</button>
+				<button type="reset" class="btn btn-danger">重　置</button>
+    		</div>
+    	</center>
+		
+	</form>
 ## }
