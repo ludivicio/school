@@ -134,6 +134,10 @@ body{
     box-shadow: inset 0px 1px 1px #fff;
 }
 
+.pager {
+	margin: 5px 0;
+}
+
 
 /* Login and Register form */
 

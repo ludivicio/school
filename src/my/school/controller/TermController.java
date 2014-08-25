@@ -1,5 +1,10 @@
 package my.school.controller;
 
+import java.util.List;
+
+import my.school.model.Term;
+import my.school.service.TermService;
+
 import com.jfinal.core.Controller;
 
 /**
@@ -9,52 +14,30 @@ import com.jfinal.core.Controller;
  * 
  */
 public class TermController extends Controller {
-	
-	
+
 	public void index() {
-		
-		
-		render("index.html");
-	}
 
-	public void add() {
-		render("add.html");
-	}
+		List<Term> terms = Term.dao.getTerms();
 
-	/**
-	 * 搜索
-	 */
-	public void search() {
+		setAttr("terms", terms);
 
 		render("index.html");
-
 	}
 
 	/**
-	 * 添加/修改科室信息处理方法
+	 * 生成一个学期
 	 */
-	public void save() {
+	public void create() {
 
-		redirect("index.html");
+		boolean result = TermService.createTerm();
+
+		if (result) {
+			setAttr("status", "success");
+		} else {
+			setAttr("status", "error");
+		}
+
+		renderJson();
 	}
 
-	/**
-	 * 跳转编辑页面
-	 * 
-	 */
-	public void edit() {
-		
-		render("add.html");
-	}
-
-	/**
-	 * 删除科室信息
-	 */
-	public void delete() {
-		
-		redirect("index.html");
-		
-	}
-
-	
 }

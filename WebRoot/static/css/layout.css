@@ -258,6 +258,8 @@ body{
 .matter {
 	position: relative;
 	top: 5px;
+	overflow-y:auto; 
+	
 }
 
 /* Responsive */

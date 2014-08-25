@@ -1,7 +1,8 @@
 package my.school.model;
 
+import java.util.List;
+
 import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Page;
 
 /**
  * Register model.
@@ -13,53 +14,24 @@ import com.jfinal.plugin.activerecord.Page;
 public class Term extends Model<Term> {
 	public static final Term dao = new Term();
 
-	public Page<Term> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *",
-				"from register order by id asc");
-	}
-
-	public Term getRegister(String userId, String doctorId, String date) {
-		return dao
-				.findFirst(
-						"select * from register where userId = ? and doctorId=? and date = ?",
-						userId, doctorId, date);
-	}
-
-	
-	public Page<Term> paginateSig(int pageNumber, int pageSize,
-			String userId) {
-		return dao.paginate(pageNumber, pageSize, "select *",
-				"from register where userId = ? ", userId);
-	}
-
-	public Page<Term> paginateForDoctor(int pageNumber, int pageSize,
-			String doctorId, String verify) {
-
-		// 审核状态（0:待审核，1:通过，2:未通过，3:用户取消预约）
-		return dao.paginate(pageNumber, pageSize, "select *",
-				"from register where doctorId = ? and verify = ?", doctorId,
-				verify);
-	}
-
 	/**
-	 * 获取科室
-	 */
-	public Grade getDepartment() {
-		return Grade.dao.findById(get("departmentId"));
-	}
-
-	/**
-	 * 获取医生姓名
-	 */
-	public Class getDoctor() {
-		return Class.dao.findById(get("doctorId"));
-	}
-
-	/**
-	 * 获取用户姓名
+	 * 获取所有的学期数据
 	 * 
+	 * @return
 	 */
-	public Assign getUser() {
-		return Assign.dao.findById(get("userId"));
+	public List<Term> getTerms() {
+		return dao.find("select * from term order by id desc");
 	}
+
+	/**
+	 * 获取最后一条记录
+	 * 
+	 * @return
+	 */
+	public Term getLastTerm() {
+
+		return dao.findFirst("select * from term order by id desc");
+
+	}
+
 }

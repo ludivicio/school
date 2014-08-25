@@ -1,8 +1,90 @@
 ## layout("/admin/common/_layout.html") {
 
 
-中文测试
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
+			<div class="widget-head">
+				<div class="pull-left">
+					<p class="control-label">学期信息</p>
+				</div>
+				<div class="pull-right">
+					<a href="javascript:void()"
+						class="btn btn-primary btn-sm create-term">生成学期</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
 
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>学期名称</th>
+							<th>开始时间</th>
+							<th>结束时间</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						## for(term in terms) {
+						<tr>
+							<td>${term.name}</td>
+							<td>${term.start}</td>
+							<td>${term.end}</td>
+						<tr>
+						## }
+						
+					</tbody>
+				</table>
+				<div class="widget-foot">
+					
+					<ul class="pager">
+					    <li><a href="#">首页</a></li>
+						<li><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">末页</a></li>
+					</ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$('.create-term').click(function() {
+
+			$.ajax({
+				url : "${CONTEXT_PATH}/admin/term/create",
+				success : function(data) {
+
+					if (data.status == "success") {
+
+						art.dialog({
+							title : "初始化学期",
+							icon : "succeed",
+							content : "学期数据初始化成功！",
+							ok : function() {
+								location.reload();
+							}
+						});
+
+					} else if (data.status == "failed") {
+
+						art.dialog({
+							title : "初始化学期",
+							icon : "error",
+							content : "学期数据初始化失败！"
+						});
+					}
+				}
+			});
+		});
+	});
+</script>
 
 ## }
