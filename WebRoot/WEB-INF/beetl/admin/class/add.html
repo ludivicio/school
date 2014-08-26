@@ -1,8 +1,64 @@
-## layout("/admin/common/_layout.html") {
+<# layout("/admin/common/_layout.html") { #>
 
+	<form class="form-horizontal" action="${CONTEXT_PATH}/admin/class/save" method="post" >
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="a"></label>
+			<div class="col-lg-6">
+			
+			</div>
+			<label class="control-label col-lg-2" for="a"></label>
+			<div class="col-lg-2">
+				
+			</div>
+		</div>
+		<input type="hidden" value="${class.id!}" name="class.id"/>
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="class.name">名　称：</label>
+			<div class="col-lg-4">
+				<input type="text" class="form-control" name="class.name" value="${class.name!}">
+				<span style="color:red">*${nameMsg!}</span>
+			</div>
+			
+			<label class="control-label col-lg-2" for="class.tuuid">班主任：</label>
+			<div class="col-lg-4">
+				<select name="class.tuuid">
+				<# for(teacher in teacherList!){ #>
+					<# if(teacher.uuid! == class.tuuid!){ #>
+						<option value="${teacher.uuid!}" checked="checked">${teacher.name!}</option>
+					<# }else{ #>
+						<option value="${teacher.uuid!}" >${teacher.name!}</option>
+					<# } #>
+				<# } #>
+				</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-2" for="class.suuid">学　校：</label>
+			<div class="col-lg-4">
+				<select name="school.suuid">
+				<# for(school in schoolList!){ #>
+					<# if(school.uuid! == class.suuid!){ #>
+						<option value="${school.uuid!}" checked="checked">${school.name!}</option>
+					<# }else{ #>
+						<option value="${school.uuid!}" >${school.name!}</option>
+					<# } #>
+				<# } #>
+				</select>
+			</div>
+			<label class="control-label col-lg-2" for=""></label>
+			<div class="col-lg-4">
+				
+			</div>
+			<span style="color:red">*${phoneMsg!}</span>
+		</div>		
 
-中文测试
+		<center>
+    			<button type="submit" class="btn btn-primary">提　交</button>
+				<button type="reset" class="btn btn-danger">重　置</button>
+    		</div>
+    	</center>
+		
+	</form>
 
-
-
-## }
+<# } #>

@@ -79,21 +79,21 @@
 
 			<ul id="nav">
 
-				## for( permission in permissions ) {
+				<# for( permission in permissions ) { #>
 				<li class="has_sub">
 					<a href="javascript:void()">
 						${permission.name}
 					</a>
 					
 					<ul>
-						## for( p in permission.subPermissions ) {
+						<# for( p in permission.subPermissions ) { #>
 						<li>
 							<a href="${p.url}">${p.name}</a>
 						</li>
-						## }
+						<# } #>
 					</ul>
 				</li>
-				## }
+				<# } #>
 				
 			</ul>
 		</div>

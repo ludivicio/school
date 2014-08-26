@@ -21,7 +21,7 @@ public class School extends Model<School> {
 	 * @return
 	 */
 	public List<School> getCategories() {
-		return School.dao.find("select * from post_category where pid > 0");
+		return School.dao.find("select * from school where pid > 0");
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class School extends Model<School> {
 	 * @return
 	 */
 	public List<School> getSubCategoriesById(int id) {
-		return School.dao.find("select * from post_category where pid = ?", id);
+		return School.dao.find("select * from school where pid = ?", id);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class School extends Model<School> {
 	 * @return
 	 */
 	public List<School> getSubCategories() {
-		return School.dao.find("select * from post_category where pid = ?", get("id"));
+		return School.dao.find("select * from school where pid = ?", get("id"));
 	}
 
 	/**
@@ -51,6 +51,6 @@ public class School extends Model<School> {
 	 * @return
 	 */
 	public Page<School> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *", "from post order by id asc");
+		return paginate(pageNumber, pageSize, "select *", "from school order by id asc");
 	}
 }

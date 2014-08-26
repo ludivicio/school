@@ -1,5 +1,6 @@
 package my.school.config;
 
+import my.school.beetl.function.CheckFunction;
 import my.school.beetl.function.ExistFunction;
 import my.school.interceptor.SessionInterceptor;
 import my.school.model.Admin;
@@ -63,7 +64,8 @@ public class CoreConfig extends JFinalConfig {
 		
 		// 注册自定义方法
 		groupTemplate.registerFunction("exist", new ExistFunction());
-
+		groupTemplate.registerFunction("check", new CheckFunction());
+		
 	}
 
 	/**

@@ -1,87 +1,122 @@
-## layout("/admin/common/_layout.html") {
+<# layout("/admin/common/_layout.html") { #>
 
-	<script type="text/javascript">
-		function del(url){
-			if(confirm('您确定要删除本学校信息？')) {
-				
-				$.get(url, function(data) {
-					alert(data.msg);
-					location.reload();
-				});
-			}
-		 }
-	</script>
-	<div class="search-box">
-		<form name="searchForm" action="/admin/school/search" method="post">
-			<span> 
-				 学校编号：
-				<input type="text" name="name" id="uuid" value="${searchUuid!}" />&nbsp;
-			           学校名称：
-				<input type="text" name="name" id="name" value="${searchName!}" />&nbsp;
-				校长名称:<input type="text" name="rector" id="rector" value="${searchRector!}"/>
-				<input type="submit" name="subButton" id="subButton" value="查询" />		
-			</span>
-		</form>
-	</div>
+<script type="text/javascript">
+	function del(url){
+		if(confirm('您确定要删除本学校信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				location.reload();
+			});
+		}
+	 }
+</script>
 	
-	<div class="data-box">
-		<table class="table table-bordered table-hover">
-			<thead>
-				<th>学校图片</th>
-				<th width="40">学校编号</th>
-				<th width="6">学校名称</th>
-				<th width="60">学校级别</th>
-				<th>学校地址</th>
-				<th width="60">校长姓名</th>
-				<th width="60">电话</th>
-				<th width="60">传真</th>
-				<th width="60">网址</th>
-				<th width="60">电子邮箱</th>
-				<th width="60">学校类型</th>
-				<th width="120">操作</th>
-				
-			</thead>
-			<tbody>
-				## for(school in schoolList.list!){
-					<tr>
-						<td align="center"><img src="${school.image!}" onload="resizeImage(this, 70, 70);" /></td>
-						<td align="center">${school.uuid!}</td>
-						<td align="center">${school.name!}</td> 
-						<td>
-							##if(school.level! ==0){
-								小学
-							##}
-							##if(school.level! == 1){
-							初中
-							##}
-						</td> 
-						<td>${school.address!}</td> 
-						<td>${school.rector!}</td> 
-						<td>${school.phone!}</td> 
-						<td>${school.fax!}</td> 
-						<td>${school.web!}</td> 
-						<td>${school.emial!}</td> 
-						<td>
-						    ##if(school.kind! ==0){
-								私立
-							##}
-							
-							##if(school.kind! == 1){
-								公立
-							##}
-						</td> 
-						<td align="center">
-							<a href="/admin/school/edit/${school.id!}">编辑</a>
-							&nbsp;&nbsp;
-							<a href="javascript:void(0)" onclick="del('/admin/school/delete/${school.id!}')">删除</a>
-						</td>
-					</tr>
-				##}
-			</tbody>
-		</table>
+<div class="row">
+	<div class="col-md-12">
+	
+		<form class="form-inline" action="/admin/school/search" method="post" role="form">
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">编号</div>
+		      		<input class="form-control" type="text" name="name" id="uuid" value="${searchUuid!}" placeholder="学校编号">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">名称</div>
+		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="学校名称">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">校长</div>
+		      		<input class="form-control" type="text" name="rector" id="rector" value="${searchRector!}" placeholder="校长姓名">
+		    	</div>
+		  	</div>
+		  	
+		  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+		</form>
+		
 	</div>
+</div>
+	
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
+
+			<div class="widget-head">
+				<div class="pull-left">
+					<p class="control-label">学校信息</p>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
+
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th align="center">学校编号</th>
+							<th>学校名称</th>
+							<th>级别</th>
+							<th>学校地址</th>
+							<th>校长姓名</th>
+							<th>电话</th>
+							<th>学校类型</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<# for(school in schoolList.list!){ #>
+						
+						<tr>
+							<td align="center">${school.uuid!}</td>
+							<td>${school.name!}</td> 
+							<td align="center">
+								${school.level! == 0 ? "小学" : "中学"}
+							</td> 
+							<td>${school.address!}</td> 
+							<td>${school.rector!}</td> 
+							<td>${school.phone!}</td> 
+							<td>
+								${school.kind! == 0 ? "公立" : "私立"}
+							</td> 
+							<td align="center">
+								<a href="/admin/school/edit/${school.id!}">编辑</a>
+								&nbsp;&nbsp;
+								<a href="javascript:void(0)" onclick="del('/admin/school/delete/${school.id!}')">删除</a>
+							</td>
+						</tr>
+						
+						<# } #>
+						
+					</tbody>
+				</table>
+				<div class="widget-foot">
+					
+					<ul class="pager pull-left">
+					    <li><a href="${CONTEXT_PATH}/admin/school/?p=1<# if(searchPage == 1) { #>&s=1<# } #>">首页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=<# if(schoolList.pageNumber <= 1) { #>1<# } else { #>${schoolList.pageNumber - 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">上一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=<# if(schoolList.pageNumber >= schoolList.totalPage) { #>${schoolList.totalPage}<# } else { #>${schoolList.pageNumber + 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">下一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=${schoolList.totalPage}<# if(searchPage == 1){ #>&s=1<# } #>">末页</a></li>
+					</ul>
+					
+					
+					<div class="pull-right">
+						<p class="help-block">当前第 ${schoolList.pageNumber} 页，共计 ${schoolList.totalPage} 页，每页 ${schoolList.pageSize} 条数据</p>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
-
-
-## }
+<# } #>

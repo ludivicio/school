@@ -1,8 +1,79 @@
-## layout("/admin/common/_layout.html") {
+<# layout("/admin/common/_layout.html") { #>
+
+	<script type="text/javascript">
+		function del(url){
+			if(confirm('您确定要删除本班级信息？')) {
+				
+				$.get(url, function(data) {
+					alert(data.msg);
+					location.reload();
+				});
+			}
+		 }
+	</script>
+	
+	<div class="search-box">
+		<form name="searchForm" action="/admin/class/search" method="post">
+			<span> 
+				 班级名称：
+				<input type="text" name="name" id="name" value="${searchName!}" />&nbsp;
+			            　班主任：
+				<select name="tuuid">
+				<# for(teacher in teacherList!){ #>
+					<# if(teacher.uuid! == searchTuuid!){ #>
+						<option value="${teacher.uuid!}" checked="checked">${teacher.name!}</option>
+					<# }else{ #>
+						<option value="${teacher.uuid!}" >${teacher.name!}</option>
+					<# } #>
+				<# } #>
+				</select>
+				&nbsp;
+				学校名称:
+				<select name="suuid">
+				<# for(school in schoolList!){ #>
+					<# if(school.uuid! == searchSuuid!){ #>
+						<option value="${school.uuid!}" checked="checked">${school.name!}</option>
+					<# }else{ #>
+						<option value="${school.uuid!}" >${school.name!}</option>
+					<# } #>
+				<# } #>
+				</select>
+				<input type="submit" name="subButton" id="subButton" value="查询" />		
+			</span>
+		</form>
+	</div>
+	
+	<div class="data-box">
+		<table class="table table-bordered table-hover">
+			<thead>
+				
+				<th width="40">班级编号</th>
+				<th width="6">班级名称</th>
+				<th width="60">班主任名称</th>
+				<th>学校名称</th>
+				<th width="120">操作</th>
+				
+			</thead>
+			<tbody>
+				<# for(class in classList.list!){ #>
+					<tr>
+						
+						<td align="center">${class.uuid!}</td>
+						<td align="center">${class.name!}</td>
+						<td align="center">${@class.getTeacher().name!}</td>
+						<td align="center">${@class.getSchool().name!}</td>
+					
+						<td align="center">
+							<a href="/admin/class/edit/${class.id!}">编辑</a>
+							&nbsp;&nbsp;
+							<a href="javascript:void(0)" onclick="del('/admin/class/delete/${class.id!}')">删除</a>
+						</td>
+					</tr>
+				 <# } #>
+			</tbody>
+		</table>
+	</div>
 
 
-中文测试
 
-
-
-## }
+<# } #>

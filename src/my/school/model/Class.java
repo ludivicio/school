@@ -18,11 +18,11 @@ public class Class extends Model<Class> {
 	public static final Class dao = new Class();
 
 	/**
-	 * 获取所有的医生信息
+	 * 获取所有班级
 	 * @return
 	 */
 	public List<Class> getDoctors(){
-		return Class.dao.find("select * from doctor order by sort desc");
+		return Class.dao.find("select * from class order by sort desc");
 	}
 	
 	public Class getByAccountAndPassword(String account, String password) {
@@ -32,10 +32,10 @@ public class Class extends Model<Class> {
 		// System.out.println("encodePassword: " + encodePassword);
 
 		return dao.findFirst(
-				"select * from doctor where account = ? and password = ?",
+				"select * from class where account = ? and password = ?",
 				account, encodePassword);
 	}
-
+	
 	/**
 	 * 获取角色信息
 	 * 
@@ -46,6 +46,21 @@ public class Class extends Model<Class> {
 	}
 
 	/**
+	 * 根据编号获取班主任
+	 */
+	public Teacher getTeacher(){
+		List<Teacher> teacher = Teacher.dao.find("select * from teacher where uuid =?",get("tuuid"));
+		return teacher.get(0);
+	}
+	/**
+	 * 根据编号获取学校
+	 */
+	public School getSchool(){
+		List<School> school = School.dao.find("select * from school where uuid =?",get("suuid"));
+		return school.get(0);
+	}
+	
+	/**
 	 * 获取管理员的所有权限
 	 * 
 	 * @return
@@ -55,12 +70,6 @@ public class Class extends Model<Class> {
 		return Permission.dao.find(sql, get("roleId"));
 	}
 
-	/**
-	 * 获取科室
-	 */
-	public Grade getDepartment() {
-		return Grade.dao.findById(get("departmentId"));
-	}
 
 	/**
 	 * 根据排序值获取首页显示的医生
@@ -69,24 +78,14 @@ public class Class extends Model<Class> {
 	 */
 	public List<Class> getRecommends() {
 		return Class.dao
-				.find("select * from doctor where recommend = 1 order by sort desc limit 0, ?",
+				.find("select * from class where recommend = 1 order by sort desc limit 0, ?",
 						Constants.RECOMMEND_DOCTOR_SIZE);
 	}
 
-	/**
-	 * 获取当天的排班信息
-	 */
-	public Score getSchedule(String date) {
-		
-		System.out.println("----- here ----");
-		
-		return Score.dao.findFirst(
-				"select * from schedule where doctorId = ? and date = ?",
-				get("id"), date);
-	}
+
 
 	public Page<Class> paginate(int pageNumber, int pageSize) {
 		return paginate(pageNumber, pageSize, "select *",
-				"from doctor order by sort desc");
+				"from class order by sort desc");
 	}
 }
