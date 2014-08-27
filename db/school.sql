@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 24, 2014 at 01:17 PM
+-- Generation Time: Aug 27, 2014 at 05:40 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
   `password` varchar(45) NOT NULL COMMENT '管理员密码',
   `rid` int(11) NOT NULL COMMENT '角色ID',
   `time` varchar(45) NOT NULL COMMENT '登录时间',
-  `tuuid` int(11) DEFAULT NULL COMMENT '教师编号',
+  `tid` int(11) DEFAULT NULL COMMENT '教师ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `account_UNIQUE` (`account`)
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `admin` (
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tuuid`) VALUES
-(1, 'admin', 'admin', 1, '1408885010799', NULL),
+INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
+(1, 'admin', 'admin', 1, '1409160051778', NULL),
 (2, '1', '1', 5, '1407894986555', NULL);
 
 -- --------------------------------------------------------
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `assign` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tid` int(11) NOT NULL COMMENT '学期ID',
   `gid` int(11) NOT NULL COMMENT '年级ID',
-  `cuuid` varchar(8) NOT NULL COMMENT '课程编号',
+  `cid` int(11) NOT NULL COMMENT '课程编号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学期排课表' AUTO_INCREMENT=1 ;
@@ -72,13 +72,32 @@ CREATE TABLE IF NOT EXISTS `assign` (
 CREATE TABLE IF NOT EXISTS `class` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uuid` varchar(8) NOT NULL COMMENT '班级编号',
-  `name` varchar(20) DEFAULT NULL COMMENT '编辑名称',
-  `tuuid` int(11) DEFAULT NULL COMMENT '班主任编号',
-  `suuid` int(11) DEFAULT NULL COMMENT '学校编号',
+  `name` varchar(20) DEFAULT NULL COMMENT '班级名称',
+  `tid` int(11) DEFAULT NULL COMMENT '班主任编号',
+  `sid` int(11) DEFAULT NULL COMMENT '学校编号',
+  `year` varchar(20) DEFAULT NULL COMMENT '入学年份',
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=13 ;
+
+--
+-- Dumping data for table `class`
+--
+
+INSERT INTO `class` (`id`, `uuid`, `name`, `tid`, `sid`, `year`, `sort`) VALUES
+(1, 'null0000', 'null级00班', NULL, NULL, NULL, 0),
+(2, 'null0000', 'null级00班', NULL, NULL, NULL, NULL),
+(3, '20010000', '2001级00班', NULL, 1, '2001', 77),
+(4, '20010002', '2001级02班', NULL, 1, '2001', 55),
+(5, '20010003', '2001级03班', NULL, 1, '2001', 66),
+(6, '20010004', '2001级04班', NULL, 1, '2001', 77),
+(7, '20020001', '2002级01班', NULL, 1, '2002', 22),
+(8, '20010005', '2001级05班', NULL, 1, '2001', 44),
+(9, '20030001', '2003级01班', NULL, 1, '2003', 55),
+(10, '20030002', '2003级02班', NULL, 1, '2003', 33),
+(11, '20040001', '2004级01班', NULL, 1, '2004', 36),
+(12, '20070001', '2007级01班', NULL, 1, '2007', 55);
 
 -- --------------------------------------------------------
 
@@ -228,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `school` (
   `level` int(11) NOT NULL DEFAULT '0' COMMENT '学校级别（小学、中学）',
   `address` varchar(100) NOT NULL COMMENT '学校地址',
   `rector` varchar(16) NOT NULL COMMENT '校长姓名',
-  `phone` varchar(11) NOT NULL COMMENT '电话',
+  `phone` varchar(45) NOT NULL COMMENT '电话',
   `fax` varchar(20) DEFAULT NULL COMMENT '传真',
   `web` varchar(100) DEFAULT NULL COMMENT '网址',
   `email` varchar(100) NOT NULL COMMENT '电子邮箱',
@@ -239,7 +258,14 @@ CREATE TABLE IF NOT EXISTS `school` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学校信息表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学校信息表' AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `school`
+--
+
+INSERT INTO `school` (`id`, `uuid`, `name`, `desc`, `level`, `address`, `rector`, `phone`, `fax`, `web`, `email`, `kind`, `sort`, `image`, `time`) VALUES
+(1, 'S4dSkbzM', '佳木斯市第六小学', '1962年更名为师范附小。1970年成立独立学校，该名为五七小学。1980年根据市教育局的统一要求，按建校时间顺序，正式定名为佳木斯市第六小学。建校以来，几代六小人薪火相传，不懈奋斗，走过了五十五年的风雨历程。在半个多世纪的历史画卷上写满了凝重与辉煌，积淀了丰富的文化底蕴，培养了大批优秀人才。', 0, '黑龙江省佳木斯市中山街211号', '张龙江', '0454-8223289', '0454-8223289', 'http://www.lxschool.net/', 'jialiuxiaoxue@163.com', 0, 99, '/upload/avatar/1409073481951.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -250,8 +276,8 @@ CREATE TABLE IF NOT EXISTS `school` (
 CREATE TABLE IF NOT EXISTS `score` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tid` int(11) NOT NULL COMMENT '学期ID',
-  `suuid` varchar(11) NOT NULL COMMENT '学生学号',
-  `cuuid` varchar(8) NOT NULL COMMENT '课程编号',
+  `sid` int(11) NOT NULL COMMENT '学生学号',
+  `cid` int(11) NOT NULL COMMENT '课程编号',
   `score` int(11) NOT NULL COMMENT '分数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
@@ -268,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `uuid` varchar(8) NOT NULL COMMENT '11位学号',
   `name` varchar(45) NOT NULL COMMENT '姓名',
   `identity` varchar(18) NOT NULL COMMENT '身份证',
-  `cuuid` int(11) NOT NULL COMMENT '班级ID',
+  `cid` int(11) NOT NULL COMMENT '班级ID',
   `sex` int(11) NOT NULL COMMENT '性别',
   `birth` varchar(45) NOT NULL COMMENT '出生日期',
   `birthplace` varchar(45) NOT NULL COMMENT '籍贯',
@@ -297,7 +323,7 @@ CREATE TABLE IF NOT EXISTS `teacher` (
   `name` varchar(45) NOT NULL COMMENT '姓名',
   `identity` varchar(18) NOT NULL COMMENT '身份证',
   `rid` int(11) NOT NULL COMMENT '角色ID',
-  `suuid` int(11) NOT NULL COMMENT '学校编号',
+  `sid` int(11) NOT NULL COMMENT '学校编号',
   `sex` int(11) NOT NULL COMMENT '性别',
   `birth` varchar(45) NOT NULL COMMENT '出生日期',
   `birthplace` varchar(45) NOT NULL COMMENT '籍贯',
@@ -331,7 +357,27 @@ CREATE TABLE IF NOT EXISTS `term` (
   `end` varchar(45) DEFAULT NULL COMMENT '学期结束时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='学期表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学期表' AUTO_INCREMENT=37 ;
+
+--
+-- Dumping data for table `term`
+--
+
+INSERT INTO `term` (`id`, `name`, `start`, `end`) VALUES
+(23, '2007-2008学年第1学期', '2007年9月', '2008年1月'),
+(24, '2007-2008学年第2学期', '2008年2月', '2008年7月'),
+(25, '2008-2009学年第1学期', '2008年9月', '2009年1月'),
+(26, '2008-2009学年第2学期', '2009年2月', '2009年7月'),
+(27, '2009-2010学年第1学期', '2009年9月', '2010年1月'),
+(28, '2009-2010学年第2学期', '2010年2月', '2010年7月'),
+(29, '2010-2011学年第1学期', '2010年9月', '2011年1月'),
+(30, '2010-2011学年第2学期', '2011年2月', '2011年7月'),
+(31, '2011-2012学年第1学期', '2011年9月', '2012年1月'),
+(32, '2011-2012学年第2学期', '2012年2月', '2012年7月'),
+(33, '2012-2013学年第1学期', '2012年9月', '2013年1月'),
+(34, '2012-2013学年第2学期', '2013年2月', '2013年7月'),
+(35, '2013-2014学年第1学期', '2013年9月', '2014年1月'),
+(36, '2013-2014学年第2学期', '2014年2月', '2014年7月');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -22,14 +22,14 @@ public class Permission extends Model<Permission> {
 	 */
 	public List<Permission> initSubPermissions() {
 
-		if(getSubPermissions() == null) {
+		if(subPermissions == null) {
 			
 			String sql = "select * from permission where pid = ? order by id asc";
 			setSubPermissions(Permission.dao.find(sql, get("id"))); 
 			
 		}
 
-		return getSubPermissions();
+		return subPermissions;
 	}
 
 	public List<Permission> getSubPermissions() {

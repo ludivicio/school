@@ -8,16 +8,12 @@ import java.util.Map;
 import my.school.config.Constants;
 import my.school.interceptor.ClassInterceptor;
 import my.school.kit.ParaKit;
-import my.school.kit.ParaKit;
-import my.school.kit.UUID;
 import my.school.model.Class;
 import my.school.model.School;
-import my.school.validator.SaveClassValidator;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
-import com.mysql.jdbc.interceptors.SessionAssociationInterceptor;
 
 /**
  * ClassController
@@ -27,10 +23,9 @@ import com.mysql.jdbc.interceptors.SessionAssociationInterceptor;
  */
 
 public class ClassController extends Controller {
-	
-	
+
 	public void index() {
-		
+
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
 		if (!ParaKit.isEmpty(getPara("s"))) {
@@ -54,9 +49,10 @@ public class ClassController extends Controller {
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 		render("index.html");
 	}
-	
+
 	@Before(ClassInterceptor.class)
 	public void add() {
+
 		render("add.html");
 	}
 
@@ -73,7 +69,7 @@ public class ClassController extends Controller {
 			queryParams.put("name", getPara("name"));
 			queryParams.put("tuuid", getPara("tuuid"));
 			queryParams.put("suuid", getPara("suuid"));
-		
+
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
 		}
@@ -98,33 +94,32 @@ public class ClassController extends Controller {
 				sb.append(" and name like ?");
 				params.add("%" + name + "%");
 			}
-			
+
 			String tuuid = queryParams.get("tuuid");
 
 			if (!ParaKit.isEmpty(tuuid)) {
 				sb.append(" and tuuid like ?");
 				params.add("%" + tuuid + "%");
 			}
-			
 
-			
 			String suuid = queryParams.get("suuid");
 
 			if (!ParaKit.isEmpty(suuid)) {
 				sb.append(" and suuid like ?");
 				params.add("%" + suuid + "%");
 			}
-			
-			setAttr("searchName",name);
-			setAttr("searchTuuid",tuuid);
-			setAttr("searchSuuid",suuid);;
+
+			setAttr("searchName", name);
+			setAttr("searchTuuid", tuuid);
+			setAttr("searchSuuid", suuid);
+			;
 			setAttr("searchPage", Constants.SEARCH_PAGE);
 
 		}
 
 		// 医生列表
-		Page<School> schoolList = School.dao.paginate(page, Constants.PAGE_SIZE,
-				"select *", sb.toString(), params.toArray());
+		Page<School> schoolList = School.dao.paginate(page, Constants.PAGE_SIZE, "select *",
+				sb.toString(), params.toArray());
 
 		setAttr("schoolList", schoolList);
 
@@ -135,17 +130,64 @@ public class ClassController extends Controller {
 	/**
 	 * 添加/修改班级信息
 	 */
-	@Before(SaveClassValidator.class)
 	public void save() {
-		//小心class冲突
-		Class classe = getModel(Class.class);
-		if (null == classe.getInt("id")) {
-			classe.set("uuid", UUID.randomUUID());
-			classe.save();
+
+		Class clazz = getModel(Class.class);
+
+		String year = clazz.getStr("year");
+		String sid = String.valueOf(clazz.getInt("sid"));
+
+		System.out.println("year: " + year);
+
+		if (ParaKit.isEmpty(clazz.getStr("id"))) {
+
+			// 首先找到该学校该年份所有的班级数量
+			int count = Class.dao.getCount(year, sid);
+
+			System.out.println("count: " + count);
+
+			count += 1;
+			
+			String uuid = null;
+			String name = null;
+
+			if (count < 10) {
+				uuid = year + "000" + count;
+				name = year + "级0" + count + "班";
+			} else {
+				uuid = year + "00" + count;
+				name = year + "级" + count + "班";
+			}
+
+			System.out.println("name: " + name + "  uuid: " + uuid);
+
+			clazz.set("year", year);
+			clazz.set("name", name);
+			clazz.set("uuid", uuid);
+
+			boolean result = clazz.save();
+
+			if (result) {
+				setAttr("status", "success");
+				setAttr("action", "create");
+				setAttr("name", name);
+				setAttr("uuid", uuid);
+			} else {
+				setAttr("status", "failed");
+			}
+
 		} else {
-			classe.update();
+
+			boolean result = clazz.update();
+			if (result) {
+				setAttr("status", "success");
+				setAttr("status", "update");
+			} else {
+				setAttr("status", "failed");
+			}
 		}
-		redirect("index.html");
+
+		renderJson();
 	}
 
 	/**
@@ -165,16 +207,14 @@ public class ClassController extends Controller {
 	public void delete() {
 		int classId = ParaKit.paramToInt(getPara(0), -1);
 
-		if(classId > -1) {
-			if(Class.dao.deleteById(classId)) {
-				renderJson("msg", "删除成功！");	
+		if (classId > -1) {
+			if (Class.dao.deleteById(classId)) {
+				renderJson("msg", "删除成功！");
 			}
 		} else {
 			renderJson("msg", "删除失败！");
 		}
-		
-		
+
 	}
 
-	
 }

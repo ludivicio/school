@@ -2,8 +2,6 @@ package my.school.model;
 
 import java.util.List;
 
-import my.school.config.Constants;
-
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -19,73 +17,56 @@ public class Class extends Model<Class> {
 
 	/**
 	 * 获取所有班级
-	 * @return
-	 */
-	public List<Class> getDoctors(){
-		return Class.dao.find("select * from class order by sort desc");
-	}
-	
-	public Class getByAccountAndPassword(String account, String password) {
-
-		String encodePassword = password;// MD5.digest(password);
-
-		// System.out.println("encodePassword: " + encodePassword);
-
-		return dao.findFirst(
-				"select * from class where account = ? and password = ?",
-				account, encodePassword);
-	}
-	
-	/**
-	 * 获取角色信息
 	 * 
 	 * @return
 	 */
-	public Role getRole() {
-		return Role.dao.findById(get("roleId"));
+	public List<Class> getClasses() {
+		return Class.dao.find("select * from class order by sort desc");
 	}
 
 	/**
-	 * 根据编号获取班主任
+	 * 获取特定年份，特定学校下班级的数量
+	 * @param year
+	 * @param sid
+	 * @return
 	 */
-	public Teacher getTeacher(){
-		List<Teacher> teacher = Teacher.dao.find("select * from teacher where uuid =?",get("tuuid"));
-		return teacher.get(0);
+	public int getCount(String year, String sid) {
+		
+		List<Class> classes = Class.dao.find("select * from class where year = ? and sid = ?", year, sid);
+		return classes.size();
+		
 	}
+	
+	
+	
+	
+	/**
+	 * 根据编号获取班主任名称
+	 */
+	public String getTeacherName() {
+
+		Teacher teacher = Teacher.dao.findById(get("id"));
+		if (teacher != null) {
+			return teacher.get("name");
+		} else {
+			return "--";
+		}
+	}
+
 	/**
 	 * 根据编号获取学校
 	 */
-	public School getSchool(){
-		List<School> school = School.dao.find("select * from school where uuid =?",get("suuid"));
-		return school.get(0);
+	public String getSchoolName() {
+		School school = School.dao.findById(get("id"));
+		if (school != null) {
+			return school.get("name");
+		} else {
+			return "--";
+		}
+
 	}
-	
-	/**
-	 * 获取管理员的所有权限
-	 * 
-	 * @return
-	 */
-	public List<Permission> getPermissions() {
-		String sql = "select * from permission where id in (select permissionId from role_permission where roleId = ?)";
-		return Permission.dao.find(sql, get("roleId"));
-	}
-
-
-	/**
-	 * 根据排序值获取首页显示的医生
-	 * 
-	 * @return
-	 */
-	public List<Class> getRecommends() {
-		return Class.dao
-				.find("select * from class where recommend = 1 order by sort desc limit 0, ?",
-						Constants.RECOMMEND_DOCTOR_SIZE);
-	}
-
-
 
 	public Page<Class> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *",
-				"from class order by sort desc");
+		return paginate(pageNumber, pageSize, "select *", "from class order by sort desc");
 	}
 }

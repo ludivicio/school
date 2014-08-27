@@ -1,64 +1,159 @@
 <# layout("/admin/common/_layout.html") { #>
 
-	<form class="form-horizontal" action="${CONTEXT_PATH}/admin/class/save" method="post" >
-		<div class="form-group">
-			<label class="control-label col-lg-2" for="a"></label>
-			<div class="col-lg-6">
-			
-			</div>
-			<label class="control-label col-lg-2" for="a"></label>
-			<div class="col-lg-2">
-				
-			</div>
-		</div>
-		<input type="hidden" value="${class.id!}" name="class.id"/>
-		<div class="form-group">
-			<label class="control-label col-lg-2" for="class.name">名　称：</label>
-			<div class="col-lg-4">
-				<input type="text" class="form-control" name="class.name" value="${class.name!}">
-				<span style="color:red">*${nameMsg!}</span>
-			</div>
-			
-			<label class="control-label col-lg-2" for="class.tuuid">班主任：</label>
-			<div class="col-lg-4">
-				<select name="class.tuuid">
-				<# for(teacher in teacherList!){ #>
-					<# if(teacher.uuid! == class.tuuid!){ #>
-						<option value="${teacher.uuid!}" checked="checked">${teacher.name!}</option>
-					<# }else{ #>
-						<option value="${teacher.uuid!}" >${teacher.name!}</option>
-					<# } #>
-				<# } #>
-				</select>
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="control-label col-lg-2" for="class.suuid">学　校：</label>
-			<div class="col-lg-4">
-				<select name="school.suuid">
-				<# for(school in schoolList!){ #>
-					<# if(school.uuid! == class.suuid!){ #>
-						<option value="${school.uuid!}" checked="checked">${school.name!}</option>
-					<# }else{ #>
-						<option value="${school.uuid!}" >${school.name!}</option>
-					<# } #>
-				<# } #>
-				</select>
-			</div>
-			<label class="control-label col-lg-2" for=""></label>
-			<div class="col-lg-4">
-				
-			</div>
-			<span style="color:red">*${phoneMsg!}</span>
-		</div>		
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
-		<center>
-    			<button type="submit" class="btn btn-primary">提　交</button>
-				<button type="reset" class="btn btn-danger">重　置</button>
-    		</div>
-    	</center>
+			<div class="widget-head">
+				<div class="pull-left">录入班级信息</div>
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="widget-content">
+				<div class="padd">
+
+					<form class="form-horizontal" action="${CONTEXT_PATH}/admin/class/save" method="post" role="form">
+
+						<input type="hidden" value="${class.id!}" name="class.id"/>
+
+						<div class="form-group">
+						
+							<label class="control-label col-lg-2" for="class.year">入学年份</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="class.year">
+								<# for(year in yearList!){ #>
+									<option value="${year}" ${year == class.year! ? "checked='checked'" : ""}>${year}年</option>
+								<# } #>
+								</select>
+							</div>
+							<p class="help-block col-lg-3">入学年份</p>
+						</div>
+
+						<div class="form-group">
+						
+							<label class="control-label col-lg-2" for="class.sid">学　校</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="class.sid">
+								<# for(school in schoolList!){ #>
+									<option value="${school.id!}" ${ school.id! == class.sid! ? "checked='checked'" : "" }>${school.name!}</option>
+								<# } #>
+								</select>
+							</div>
+							<p class="help-block col-lg-3">请选择学校</p>
+							
+						</div>
+
+						<div class="form-group">
+						
+							<label class="control-label col-lg-2" for="class.tid">班主任</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="class.tid">
+								<# for(teacher in teacherList!){ #>
+									<option value="${teacher.id!}" ${teacher.id! == class.tid! ? "checked='checked'" : ""}>${teacher.name!}</option>
+								<# } #>
+								</select>
+							</div>
+							<p class="help-block col-lg-3">指派班主任</p>
+							
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-lg-2" for="class.sort">排序值</label>
+							<div class="col-lg-3">
+								<input type="text" class="form-control input-sm" name="class.sort" value="${class.sort!}" />
+								<p class="help-block">0~255之间的整数，数值越大，排序越靠前，默认为0（可选）</p>
+							</div>
+						</div>
+
+						<hr />
+						<div class="form-group">
+							<div class="col-lg-offset-1 col-lg-9">
+								<a href="javascript:void()" class="btn btn-primary save-class">提 交</a>
+								<button type="reset" class="btn btn-danger">重 置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="widget-foot">
+
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function() {
 		
-	</form>
+		$('.save-class').click(function() {
+			
+			$.ajax({
+				
+	    		url: "${CONTEXT_PATH}/admin/class/save",
+	    		
+	    		data: {
+	    			
+	    			'class.id' : $('input[name="class.id"]').val(),
+	    			'class.year' : $('select[name="class.year"]').val(),
+	    			'class.sid' : $('select[name="class.sid"]').val(),
+	    			'class.tid' : $('select[name="class.tid"]').val(),
+	    			'class.sort' : $('input[name="class.sort"]').val(),
+	    		},
+				success: function(data) {
+					
+					if(data.status == "success") {
+						
+						if(data.action == "create") {
+							
+							art.dialog({
+								title: "录入成功",
+								icon: "succeed",
+							    content : "班级信息录入成功！<br/><br/>"
+								    	+ "班级名称：" + data.name + "<br/><br/>"
+								    	+ "班级编号：" + data.uuid,
+								ok: function() {
+									location.href = "${CONTEXT_PATH}/admin/class";
+								},
+								cancel:false,
+							});
+							
+						} else if(data.action == "update") {
+							art.dialog({
+								title: "修改成功",
+								icon: "succeed",
+							    content : "班级信息修改成功！<br/><br/>",
+								ok: function() {
+									location.href = "${CONTEXT_PATH}/admin/class";
+								},
+								cancel:false,
+							});
+						}
+						
+						
+					} else if(data.status == "failed") {
+						
+						art.dialog({
+							title: "修改失败",
+							icon: "error",
+						    content : "班级信息修改失败！<br/><br/>",
+							cancelVal: '返回',
+							cancel: true ,
+						});
+					}
+					
+	    		}
+	    	});
+			
+		});
+		
+	});
+
+</script>
+
+
 
 <# } #>

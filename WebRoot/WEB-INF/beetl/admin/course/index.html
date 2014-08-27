@@ -1,8 +1,103 @@
 <# layout("/admin/common/_layout.html") { #>
 
+<script type="text/javascript">
+	function del(url){
+		if(confirm('您确定要删除本课程信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				location.reload();
+			});
+		}
+	 }
+</script>
+	
+<div class="row">
+	<div class="col-md-12">
+	
+		<form class="form-inline" action="/admin/course/search" method="post" role="form">
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">编号</div>
+		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="学校编号">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">名称</div>
+		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="学校名称">
+		    	</div>
+		  	</div>
+		  	
+		  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+		</form>
+		
+	</div>
+</div>
+	
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
-中文测试
+			<div class="widget-head">
+				<div class="pull-left">
+					<p class="control-label">课程信息</p>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
 
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th align="center">课程编号</th>
+							<th>课程名称</th>
+							<th>课程备注</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
 
+						<# for(course in courseList.list!){ #>
+						
+						<tr>
+							<td align="center">${course.uuid!}</td>
+							<td>${course.name!}</td> 
+							<td>${course.remark!}</td> 
+						
+							<td align="center">
+								<a href="/admin/course/edit/${course.id!}">编辑</a>
+								&nbsp;&nbsp;
+								<a href="javascript:void(0)" onclick="del('/admin/course/delete/${course.id!}')">删除</a>
+							</td>
+						</tr>
+						
+						<# } #>
+						
+					</tbody>
+				</table>
+				<div class="widget-foot">
+					
+					<ul class="pager pull-left">
+					    <li><a href="${CONTEXT_PATH}/admin/school/?p=1<# if(searchPage == 1) { #>&s=1<# } #>">首页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=<# if(courseList.pageNumber <= 1) { #>1<# } else { #>${courseList.pageNumber - 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">上一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=<# if(courseList.pageNumber >= courseList.totalPage) { #>${courseList.totalPage}<# } else { #>${courseList.pageNumber + 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">下一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/school/?p=${courseList.totalPage}<# if(searchPage == 1){ #>&s=1<# } #>">末页</a></li>
+					</ul>
+					
+					
+					<div class="pull-right">
+						<p class="help-block">当前第 ${courseList.pageNumber} 页，共计 ${courseList.totalPage} 页，每页 ${courseList.pageSize} 条数据</p>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <# } #>

@@ -18,23 +18,25 @@
 				 班级名称：
 				<input type="text" name="name" id="name" value="${searchName!}" />&nbsp;
 			            　班主任：
-				<select name="tuuid">
+				<select name="tid">
+				<option value="-1">--请选择--</option>
 				<# for(teacher in teacherList!){ #>
-					<# if(teacher.uuid! == searchTuuid!){ #>
-						<option value="${teacher.uuid!}" checked="checked">${teacher.name!}</option>
+					<# if(teacher.id! == searchTid!){ #>
+						<option value="${teacher.id!}" checked="checked">${teacher.name!}</option>
 					<# }else{ #>
-						<option value="${teacher.uuid!}" >${teacher.name!}</option>
+						<option value="${teacher.id!}" >${teacher.name!}</option>
 					<# } #>
 				<# } #>
 				</select>
 				&nbsp;
 				学校名称:
-				<select name="suuid">
+				<select name="sid">
+					<option value="-1">--请选择--</option>
 				<# for(school in schoolList!){ #>
-					<# if(school.uuid! == searchSuuid!){ #>
-						<option value="${school.uuid!}" checked="checked">${school.name!}</option>
+					<# if(school.id! == searchSid!){ #>
+						<option value="${school.id!}" checked="checked">${school.name!}</option>
 					<# }else{ #>
-						<option value="${school.uuid!}" >${school.name!}</option>
+						<option value="${school.id!}" >${school.name!}</option>
 					<# } #>
 				<# } #>
 				</select>
@@ -60,8 +62,8 @@
 						
 						<td align="center">${class.uuid!}</td>
 						<td align="center">${class.name!}</td>
-						<td align="center">${@class.getTeacher().name!}</td>
-						<td align="center">${@class.getSchool().name!}</td>
+						<td align="center">${@class.getTeacherName()}</td>
+						<td align="center">${@class.getSchoolName()}</td>
 					
 						<td align="center">
 							<a href="/admin/class/edit/${class.id!}">编辑</a>
@@ -72,6 +74,22 @@
 				 <# } #>
 			</tbody>
 		</table>
+		<div class="widget-foot">
+			
+			<ul class="pager pull-left">
+			    <li><a href="${CONTEXT_PATH}/admin/class/?p=1<# if(searchPage == 1) { #>&s=1<# } #>">首页</a></li>
+				<li><a href="${CONTEXT_PATH}/admin/class/?p=<# if(classList.pageNumber <= 1) { #>1<# } else { #>${classList.pageNumber - 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">上一页</a></li>
+				<li><a href="${CONTEXT_PATH}/admin/class/?p=<# if(classList.pageNumber >= classList.totalPage) { #>${classList.totalPage}<# } else { #>${classList.pageNumber + 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">下一页</a></li>
+				<li><a href="${CONTEXT_PATH}/admin/class/?p=${classList.totalPage}<# if(searchPage == 1){ #>&s=1<# } #>">末页</a></li>
+			</ul>
+			
+			
+			<div class="pull-right">
+				<p class="help-block">当前第 ${classList.pageNumber} 页，共计 ${classList.totalPage} 页，每页 ${classList.pageSize} 条数据</p>
+			</div>
+
+			<div class="clearfix"></div>
+		</div>
 	</div>
 
 
