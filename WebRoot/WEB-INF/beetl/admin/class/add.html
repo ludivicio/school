@@ -34,12 +34,13 @@
 							<label class="control-label col-lg-2" for="class.sid">学　校</label>
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="class.sid">
+									<option value="-1">请选择学校</option>
 								<# for(school in schoolList!){ #>
 									<option value="${school.id!}" ${ school.id! == class.sid! ? "checked='checked'" : "" }>${school.name!}</option>
 								<# } #>
 								</select>
 							</div>
-							<p class="help-block col-lg-3">请选择学校</p>
+							<p class="help-block col-lg-3">请选择学校（必选）</p>
 							
 						</div>
 
@@ -53,7 +54,7 @@
 								<# } #>
 								</select>
 							</div>
-							<p class="help-block col-lg-3">指派班主任</p>
+							<p class="help-block col-lg-3">指派班主任（必选）</p>
 							
 						</div>
 						
@@ -87,7 +88,29 @@
 
 <script type="text/javascript">
 
+
+	function getTeacher() {
+		var value = $('select[name="class.sid"]').val();
+		$.getJSON("${CONTEXT_PATH}/admin/class/getTeachers/?r=4&s=" + value, function (data) {
+	        
+			//对请求返回的JSON格式进行分解加载
+	        $.each(data.json, function(idx, item) {
+	            $('select[name="class.tid"]').append($("<option/>").text(item).attr("value", idx));
+	        });
+			
+	    });
+	}
+
+
 	$(document).ready(function() {
+		
+		
+		$('select[name="class.sid"]').change(function(){  
+
+			getTeacher();
+			
+		});
+		
 		
 		$('.save-class').click(function() {
 			
@@ -143,6 +166,16 @@
 							cancelVal: '返回',
 							cancel: true ,
 						});
+					} else if(data.status == "error") {
+						
+						art.dialog({
+							title: "信息不完整",
+							icon: "error",
+						    content : data.errorMsg + "<br/><br/>",
+							cancelVal: '返回',
+							cancel: true ,
+						});
+						
 					}
 					
 	    		}

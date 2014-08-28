@@ -15,12 +15,12 @@
 <div class="row">
 	<div class="col-md-12">
 	
-		<form class="form-inline" action="/admin/school/search" method="post" role="form">
+		<form class="form-inline" action="${CONTEXT_PATH}/admin/school/search" method="post" role="form">
 		  	
 		  	<div class="form-group">
 		    	<div class="input-group">
 		      		<div class="input-group-addon">编号</div>
-		      		<input class="form-control" type="text" name="name" id="uuid" value="${searchUuid!}" placeholder="学校编号">
+		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="学校编号">
 		    	</div>
 		  	</div>
 		  	
@@ -75,9 +75,9 @@
 						<# for(school in schoolList.list!){ #>
 						
 						<tr>
-							<td align="center">${school.uuid!}</td>
+							<td>${school.uuid!}</td>
 							<td>${school.name!}</td> 
-							<td align="center">
+							<td>
 								${school.level! == 0 ? "小学" : "中学"}
 							</td> 
 							<td>${school.address!}</td> 
@@ -87,9 +87,9 @@
 								${school.kind! == 0 ? "公立" : "私立"}
 							</td> 
 							<td align="center">
-								<a href="/admin/school/edit/${school.id!}">编辑</a>
+								<a href="${CONTEXT_PATH}/admin/school/edit/${school.id!}">编辑</a>
 								&nbsp;&nbsp;
-								<a href="javascript:void(0)" onclick="del('/admin/school/delete/${school.id!}')">删除</a>
+								<a href="javascript:void(0)" onclick="del('${CONTEXT_PATH}/admin/school/delete/${school.id!}')">删除</a>
 							</td>
 						</tr>
 						

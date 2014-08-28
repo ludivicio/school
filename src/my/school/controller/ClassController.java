@@ -9,7 +9,8 @@ import my.school.config.Constants;
 import my.school.interceptor.ClassInterceptor;
 import my.school.kit.ParaKit;
 import my.school.model.Class;
-import my.school.model.School;
+import my.school.model.Teacher;
+import my.school.validator.SaveClassValidator;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
@@ -21,7 +22,7 @@ import com.jfinal.plugin.activerecord.Page;
  * 班级管理
  * 
  */
-
+@Before(ClassInterceptor.class)
 public class ClassController extends Controller {
 
 	public void index() {
@@ -40,13 +41,17 @@ public class ClassController extends Controller {
 		if (page < 1) {
 			page = 1;
 		}
-		// 读取所有的科室信息。
+
+		// 读取所有的班级信息
 		Page<Class> classList = Class.dao.paginate(page, Constants.PAGE_SIZE);
+
 		setAttr("classList", classList);
+
 		setAttr("searchName", "");
-		setAttr("searchTuuid", "");
-		setAttr("searchSuuid", "");
+		setAttr("searchSid", "");
+		setAttr("searchTid", "");
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
+
 		render("index.html");
 	}
 
@@ -60,6 +65,7 @@ public class ClassController extends Controller {
 	 * 搜索
 	 */
 	public void search() {
+
 		if (ParaKit.isEmpty(getPara("s"))) {
 
 			// 说明当前请求是搜索数据的post请求，并非搜索的分页请求
@@ -67,8 +73,8 @@ public class ClassController extends Controller {
 
 			Map<String, String> queryParams = new HashMap<String, String>();
 			queryParams.put("name", getPara("name"));
-			queryParams.put("tuuid", getPara("tuuid"));
-			queryParams.put("suuid", getPara("suuid"));
+			queryParams.put("tid", getPara("tid"));
+			queryParams.put("sid", getPara("sid"));
 
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
@@ -95,33 +101,34 @@ public class ClassController extends Controller {
 				params.add("%" + name + "%");
 			}
 
-			String tuuid = queryParams.get("tuuid");
-
-			if (!ParaKit.isEmpty(tuuid)) {
-				sb.append(" and tuuid like ?");
-				params.add("%" + tuuid + "%");
+			int sid = Integer.parseInt(queryParams.get("sid"));
+			if (sid > -1) {
+				sb.append(" and sid = ?");
+				params.add(sid);
 			}
 
-			String suuid = queryParams.get("suuid");
-
-			if (!ParaKit.isEmpty(suuid)) {
-				sb.append(" and suuid like ?");
-				params.add("%" + suuid + "%");
+			int tid = Integer.parseInt(queryParams.get("tid"));
+			if (tid > -1) {
+				sb.append(" and tid = ?");
+				params.add(tid);
 			}
 
 			setAttr("searchName", name);
-			setAttr("searchTuuid", tuuid);
-			setAttr("searchSuuid", suuid);
-			;
+			setAttr("searchSid", sid);
+			setAttr("searchTid", tid);
 			setAttr("searchPage", Constants.SEARCH_PAGE);
+
+			// 读取所有班主任的信息
+			List<Teacher> teacherList = Teacher.dao.getHeadTeachers(sid);
+			setAttr("teacherList", teacherList);
 
 		}
 
-		// 医生列表
-		Page<School> schoolList = School.dao.paginate(page, Constants.PAGE_SIZE, "select *",
+		// 班级列表
+		Page<Class> classList = Class.dao.paginate(page, Constants.PAGE_SIZE, "select *",
 				sb.toString(), params.toArray());
 
-		setAttr("schoolList", schoolList);
+		setAttr("classList", classList);
 
 		render("index.html");
 
@@ -130,6 +137,7 @@ public class ClassController extends Controller {
 	/**
 	 * 添加/修改班级信息
 	 */
+	@Before(SaveClassValidator.class)
 	public void save() {
 
 		Class clazz = getModel(Class.class);
@@ -147,7 +155,7 @@ public class ClassController extends Controller {
 			System.out.println("count: " + count);
 
 			count += 1;
-			
+
 			String uuid = null;
 			String name = null;
 
@@ -168,10 +176,17 @@ public class ClassController extends Controller {
 			boolean result = clazz.save();
 
 			if (result) {
+
+				// 读取教师信息，将其改为班主任
+				Teacher teacher = Teacher.dao.findById(clazz.get("tid"));
+				teacher.set("rid", 3);
+				teacher.update();
+
 				setAttr("status", "success");
 				setAttr("action", "create");
 				setAttr("name", name);
 				setAttr("uuid", uuid);
+
 			} else {
 				setAttr("status", "failed");
 			}
@@ -180,8 +195,21 @@ public class ClassController extends Controller {
 
 			boolean result = clazz.update();
 			if (result) {
+
+				Teacher oldTeacher = Teacher.dao.getTeacherByClassId(clazz.getInt("id"));
+				Teacher newTeacher = Teacher.dao.findById(clazz.getInt("tid"));
+
+				if (oldTeacher.getInt("id") != newTeacher.getInt("id")) {
+					oldTeacher.set("rid", 4);
+					oldTeacher.update();
+
+					newTeacher.set("rid", 3);
+					newTeacher.update();
+				}
+
 				setAttr("status", "success");
 				setAttr("status", "update");
+
 			} else {
 				setAttr("status", "failed");
 			}
@@ -194,11 +222,51 @@ public class ClassController extends Controller {
 	 * 跳转编辑页面
 	 * 
 	 */
-	@Before(ClassInterceptor.class)
 	public void edit() {
 		int classId = getParaToInt(0);
 		setAttr("class", Class.dao.findById(classId));
 		render("add.html");
+	}
+
+	/**
+	 * 采用AJAX方式，根据学校ID和角色ID获取教师信息
+	 */
+	public void getTeachers() {
+
+		// 学校ID
+		int sid = ParaKit.paramToInt(getPara("s"), -1);
+		// 角色ID
+		int rid = ParaKit.paramToInt(getPara("r"), -1);
+
+		if (sid > -1) {
+
+			List<Teacher> teachers = null;
+
+			if (rid == 3) {
+				teachers = Teacher.dao.getHeadTeachers(sid);
+			} else if (rid == 4) {
+				teachers = Teacher.dao.getNormalTeachers(sid);
+			}
+
+			if (teachers != null) {
+
+				System.out.println("teachers.size = " + teachers.size());
+
+				Map<String, String> result = new HashMap<String, String>();
+
+				for (Teacher teacher : teachers) {
+					result.put(String.valueOf(teacher.get("id")), teacher.getStr("name"));
+				}
+
+				renderJson("json", result);
+
+				return;
+			}
+
+		}
+
+		renderJson("json", "");
+
 	}
 
 	/**

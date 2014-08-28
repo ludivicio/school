@@ -5,7 +5,6 @@ import java.util.List;
 
 import my.school.kit.DateKit;
 import my.school.model.School;
-import my.school.model.Teacher;
 
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
@@ -32,14 +31,8 @@ public class ClassInterceptor implements Interceptor {
 		controller.setAttr("yearList", years);
 
 		// 读取所有学校信息
-		List<School> schoolList = School.dao.find("select * from school");
+		List<School> schoolList = School.dao.getSchools();
 		controller.setAttr("schoolList", schoolList);
-
-		System.out.println("schoolList.size = " + schoolList.size());
-		
-		// 读取所有任课教师的信息
-		List<Teacher> teacherList = Teacher.dao.find("select * from teacher where rid=4");
-		controller.setAttr("teacherList", teacherList);
 
 	}
 }

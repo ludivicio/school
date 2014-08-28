@@ -6,14 +6,17 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
 /**
- * Doctor model.
+ * Class model.
  * 
- * 所有 sql 写在 Model 或 Service 中，不要写在 Controller 中，养成好习惯，有利于大型项目的开发与维护
  */
 
 @SuppressWarnings("serial")
 public class Class extends Model<Class> {
 	public static final Class dao = new Class();
+
+	private Teacher teacher;
+
+	private School school;
 
 	/**
 	 * 获取所有班级
@@ -26,19 +29,19 @@ public class Class extends Model<Class> {
 
 	/**
 	 * 获取特定年份，特定学校下班级的数量
+	 * 
 	 * @param year
 	 * @param sid
 	 * @return
 	 */
 	public int getCount(String year, String sid) {
-		
-		List<Class> classes = Class.dao.find("select * from class where year = ? and sid = ?", year, sid);
+
+		List<Class> classes = Class.dao.find("select * from class where year = ? and sid = ?",
+				year, sid);
 		return classes.size();
-		
+
 	}
-	
-	
-	
+
 	
 	/**
 	 * 根据编号获取班主任名称
@@ -66,7 +69,44 @@ public class Class extends Model<Class> {
 
 	}
 
+	/**
+	 * 根据SchoolId获取class列表
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Class> getClassListBySid(int sid) {
+		return Class.dao.find("select * from class where sid = ?", sid);
+	}
+
 	public Page<Class> paginate(int pageNumber, int pageSize) {
 		return paginate(pageNumber, pageSize, "select *", "from class order by sort desc");
+	}
+
+	public Teacher getTeacher() {
+
+		if (teacher == null) {
+			teacher = Teacher.dao.findById(get("tid"));
+		}
+
+		return teacher;
+	}
+
+	public void setTeacher(Teacher teacher) {
+		this.teacher = teacher;
+	}
+
+	public School getSchool() {
+
+		if (school == null) {
+			school = School.dao.findById(get("id"));
+		}
+
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
 	}
 }

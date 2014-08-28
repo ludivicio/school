@@ -90,5 +90,13 @@ public class DateKit {
 		return date.getMonth() + 1;
 	}
 	
-	
+	/**
+	 * 获取今天的日期时间
+	 * 
+	 * @return
+	 */
+	public static String getDateTime() {
+		formatter.applyPattern("yyyy-MM-dd hh:mm:ss");
+		return formatter.format(new Date());
+	}
 }

@@ -1,8 +1,145 @@
 <# layout("/admin/common/_layout.html") { #>
 
+<script type="text/javascript">
+	function del(url){
+		if(confirm('您确定要删除本学生信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				location.reload();
+			});
+		}
+	 }
+</script>
+	
+<div class="row">
+	<div class="col-md-12">
+	
+		<form class="form-inline" action="/admin/student/search" method="post" role="form">
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">编号</div>
+		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="学生编号">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">姓名</div>
+		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="学生姓名">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">性别</div>
+		      		<select class="form-control input-sm" name="sex">
+		      			<option value="-1">--请选择--</option>
+						<option value="0" ${check(searchSex!, 0, "checked='checked'")} >女</option>
+						<option value="1" ${check(searchSex!, 1, "checked='checked'")} >男</option> 
+					</select>
+		    	</div>
+		  	</div>
+		  	
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">政治面貌</div>
+						<select class="form-control input-sm" name="feature">
+						
+							<option value="-1" >-请选择--</option>
+							<option value="0" ${check(searchFeature!, 0, "checked='checked'")} >党员</option>
+							<option value="1" ${check(searchFeature!, 1, "checked='checked'")} >团员</option> 
+							<option value="2" ${check(searchFeature!, 2, "checked='checked'")} >群众</option> 
+						</select>
+		    	</div>
+		  	</div>
+		  	
+		  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+		</form>
+		
+	</div>
+</div>
+	
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
-中文测试
+			<div class="widget-head">
+				<div class="pull-left">
+					<p class="control-label">学生信息</p>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
 
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th align="center">学生编号</th>
+							<th align="center">姓名</th>
+							<th align="center">身份证</th>
+							<th align="center">学校名称</th>
+							<th align="center">性别</th>
+							<th>班级</th>
+							<th align="center">籍贯</th>
+							<th align="center">政治面貌</th>
+							<th align="center">民族</th>
+							<th align="center">电话</th>
+							<th>状态</th>
+							<th align="center">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<# for(student in studentList.list!){ #>
+						<tr>
+							<td align="center">${student.uuid!}</td>
+							<td>${student.name!}</td> 
+							<td align="center">${student.identity!}</td> 
+							<td>${@student.getSchoolName()}</td> 
+							<td>${student.sex! == 0 ? "女" : "男"}</td>
+							<td>${@student.getClassName()}</td> 
+							<td>${student.birthplace!}</td> 
+							<td>
+								${student.feature! == 0 ? "党员" : student.feature! == 1 ? "团员" : "群众"}
+							</td> 
+							<td>${student.national!}</td>
+							<td>${student.phone!}</td>
+							<td>${teacher.status! == 0 ? "在校" : teacher.education! == 1 ? "退学" : teacher.education! == 1 ? "休学" : "请假"}</td>
+							<td align="center">
+								<a href="/admin/student/edit/${student.id!}">编辑</a>
+								&nbsp;&nbsp;
+								<a href="javascript:void(0)" onclick="del('/admin/student/delete/${student.id!}')">删除</a>
+							</td>
+						</tr>
+						
+						<# } #>
+						
+					</tbody>
+				</table>
+				<div class="widget-foot">
+					
+					<ul class="pager pull-left">
+					    <li><a href="${CONTEXT_PATH}/admin/student/?p=1<# if(searchPage == 1) { #>&s=1<# } #>">首页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/student/?p=<# if(studentList.pageNumber <= 1) { #>1<# } else { #>${studentList.pageNumber - 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">上一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/student/?p=<# if(studentList.pageNumber >= studentList.totalPage) { #>${studentList.totalPage}<# } else { #>${studentList.pageNumber + 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">下一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/student/?p=${studentList.totalPage}<# if(searchPage == 1){ #>&s=1<# } #>">末页</a></li>
+					</ul>
+					
+					
+					<div class="pull-right">
+						<p class="help-block">当前第 ${studentList.pageNumber} 页，共计 ${studentList.totalPage} 页，每页 ${studentList.pageSize} 条数据</p>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <# } #>

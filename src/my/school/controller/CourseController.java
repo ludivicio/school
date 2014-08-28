@@ -8,7 +8,6 @@ import java.util.Map;
 import my.school.config.Constants;
 import my.school.kit.ParaKit;
 import my.school.kit.UUID;
-import my.school.model.Class;
 import my.school.model.Course;
 
 import com.jfinal.core.Controller;
@@ -21,10 +20,9 @@ import com.jfinal.plugin.activerecord.Page;
  * 
  */
 public class CourseController extends Controller {
-	
-	
+
 	public void index() {
-		
+
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
 		if (!ParaKit.isEmpty(getPara("s"))) {
@@ -64,7 +62,7 @@ public class CourseController extends Controller {
 
 			Map<String, String> queryParams = new HashMap<String, String>();
 			queryParams.put("name", getPara("name"));
-			queryParams.put("uuid", getPara("tuuid"));
+			queryParams.put("uuid", getPara("uuid"));
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
 		}
@@ -89,27 +87,26 @@ public class CourseController extends Controller {
 				sb.append(" and name like ?");
 				params.add("%" + name + "%");
 			}
-			
+
 			String uuid = queryParams.get("uuid");
 
 			if (!ParaKit.isEmpty(uuid)) {
 				sb.append(" and uuid like ?");
 				params.add("%" + uuid + "%");
 			}
-			setAttr("searchName",name);
-			setAttr("searchUuid",uuid);
+			setAttr("searchName", name);
+			setAttr("searchUuid", uuid);
 			setAttr("searchPage", Constants.SEARCH_PAGE);
 
 		}
 
 		// 课程列表
-		Page<Course> courseList = Course.dao.paginate(page, Constants.PAGE_SIZE,
-				"select *", sb.toString(), params.toArray());
+		Page<Course> courseList = Course.dao.paginate(page, Constants.PAGE_SIZE, "select *",
+				sb.toString(), params.toArray());
 
 		setAttr("courseList", courseList);
 
 		render("index.html");
-
 
 	}
 
@@ -118,10 +115,14 @@ public class CourseController extends Controller {
 	 */
 	public void save() {
 		Course course = getModel(Course.class);
-		if(course.get("id")==null){
-			course.set("uuid",UUID.randomUUID());
+		// 排序位置
+		if (course.get("sort") == null || course.get("sort").equals("")) {
+			course.set("sort", 1);
+		}
+		if (course.get("id") == null) {
+			course.set("uuid", UUID.randomUUID());
 			course.save();
-		}else{
+		} else {
 			course.update();
 		}
 		redirect("index.html");
@@ -142,15 +143,14 @@ public class CourseController extends Controller {
 	 */
 	public void delete() {
 		int courseId = ParaKit.paramToInt(getPara(0), -1);
-		if(courseId > -1) {
-			if(Course.dao.deleteById(courseId)) {
-				renderJson("msg", "删除成功！");	
+		if (courseId > -1) {
+			if (Course.dao.deleteById(courseId)) {
+				renderJson("msg", "删除成功！");
 			}
 		} else {
 			renderJson("msg", "删除失败！");
 		}
-		
+
 	}
 
-	
 }

@@ -47,7 +47,7 @@ public class SchoolController extends Controller {
 		setAttr("schoolList", schoolList);
 		setAttr("searchUuid", "");
 		setAttr("searchName", "");
-		setAttr("searchRecotr", "");
+		setAttr("searchRector", "");
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 
 		render("index.html");
@@ -69,7 +69,7 @@ public class SchoolController extends Controller {
 
 			Map<String, String> queryParams = new HashMap<String, String>();
 			queryParams.put("uuid", getPara("uuid"));
-			queryParams.put("rector", getPara("recotr"));
+			queryParams.put("rector", getPara("rector"));
 			queryParams.put("name", getPara("name"));
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
@@ -112,7 +112,7 @@ public class SchoolController extends Controller {
 
 			setAttr("searchUuid", uuid);
 			setAttr("searchName", name);
-			setAttr("searchRecotr", rector);
+			setAttr("searchRector", rector);
 			setAttr("searchPage", Constants.SEARCH_PAGE);
 
 		}
@@ -145,7 +145,10 @@ public class SchoolController extends Controller {
 
 		// 设置头像路径
 		school.set("image", savePath);
-
+		//排序位置
+		if(school.get("sort") == null || school.get("sort").equals("")){
+			school.set("sort",1);
+		}
 		if (null == school.getInt("id")) {
 			school.set("uuid", UUID.randomUUID());
 			school.save();

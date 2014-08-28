@@ -1,8 +1,150 @@
 <# layout("/admin/common/_layout.html") { #>
 
+<script type="text/javascript">
+	function del(url){
+		if(confirm('您确定要删除本教师信息？')) {
+			
+			$.get(url, function(data) {
+				alert(data.msg);
+				location.reload();
+			});
+		}
+	 }
+</script>
+	
+<div class="row">
+	<div class="col-md-12">
+	
+		<form class="form-inline" action="/admin/teacher/search" method="post" role="form">
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">编号</div>
+		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="教师编号">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">姓名</div>
+		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="教师姓名">
+		    	</div>
+		  	</div>
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">性别</div>
+		      		<select class="form-control input-sm" name="sex">
+		      			<option value="-1">--请选择--</option>
+						<option value="0" ${check(searchSex!, 0, "checked='checked'")} >女</option>
+						<option value="1" ${check(searchSex!, 1, "checked='checked'")} >男</option> 
+					</select>
+		    	</div>
+		  	</div>
+		  	
+		  	
+		  	<div class="form-group">
+		    	<div class="input-group">
+		      		<div class="input-group-addon">政治面貌</div>
+						<select class="form-control input-sm" name="feature">
+						
+							<option value="-1" >-请选择--</option>
+							<option value="0" ${check(searchFeature!, 0, "checked='checked'")} >党员</option>
+							<option value="1" ${check(searchFeature!, 1, "checked='checked'")} >团员</option> 
+							<option value="2" ${check(searchFeature!, 2, "checked='checked'")} >群众</option> 
+						</select>
+		    	</div>
+		  	</div>
+		  	
+		  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+		</form>
+		
+	</div>
+</div>
+	
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
-中文测试
+			<div class="widget-head">
+				<div class="pull-left">
+					<p class="control-label">教师信息</p>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="widget-content referrer">
+				<!-- Widget content -->
 
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th align="center">教师编号</th>
+							<th align="center">姓名</th>
+							<th align="center">身份证</th>
+							<th align="center">学校名称</th>
+							<th align="center">性别</th>
+							<th align="center">籍贯</th>
+							<th align="center">政治面貌</th>
+							<th align="center">学历</th>
+							<th align="center">教龄</th>
+							<th align="center">民族</th>
+							<th align="center">电话</th>
+							<th align="center">邮箱</th>
+							<th align="center">状态</th>
+							<th align="center">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<# for(teacher in teacherList.list!){ #>
+						
+						<tr>
+							<td align="center">${teacher.uuid!}</td>
+							<td>${teacher.name!}</td> 
+							<td align="center">${teacher.identity!}</td> 
+							<td>${@teacher.getSchoolName()}</td> 
+							<td>${teacher.sex! == 0 ? "女" : "男"}</td> 
+							<td>${teacher.birthplace!}</td> 
+							<td>
+								${teacher.feature! == 0 ? "党员" : teacher.feature! == 1 ? "团员" : "群众"}
+							</td> 
+							<td>${teacher.education! == 0 ? "学士" : teacher.education! == 1 ? "硕士" : "博士"}</td>
+							<td>${teacher.seniority!}</td>
+							<td>${teacher.national!}</td>
+							<td>${teacher.phone!}</td>
+							<td>${teacher.email!}</td>
+							<td>${teacher.status! == 0 ? "在职" : teacher.education! == 1 ? "病退" : teacher.education! == 1 ? "退休" : "休假"}</td>
+							<td align="center">
+								<a href="/admin/teacher/edit/${teacher.id!}">编辑</a>
+								&nbsp;&nbsp;
+								<a href="javascript:void(0)" onclick="del('/admin/teacher/delete/${teacher.id!}')">删除</a>
+							</td>
+						</tr>
+						
+						<# } #>
+						
+					</tbody>
+				</table>
+				<div class="widget-foot">
+					
+					<ul class="pager pull-left">
+					    <li><a href="${CONTEXT_PATH}/admin/teacher/?p=1<# if(searchPage == 1) { #>&s=1<# } #>">首页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/teacher/?p=<# if(teacherList.pageNumber <= 1) { #>1<# } else { #>${teacherList.pageNumber - 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">上一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/teacher/?p=<# if(teacherList.pageNumber >= teacherList.totalPage) { #>${teacherList.totalPage}<# } else { #>${teacherList.pageNumber + 1}<# } #><# if(searchPage == 1) { #>&s=1<# } #>">下一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/teacher/?p=${teacherList.totalPage}<# if(searchPage == 1){ #>&s=1<# } #>">末页</a></li>
+					</ul>
+					
+					
+					<div class="pull-right">
+						<p class="help-block">当前第 ${teacherList.pageNumber} 页，共计 ${teacherList.totalPage} 页，每页 ${teacherList.pageSize} 条数据</p>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <# } #>

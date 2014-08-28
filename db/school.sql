@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 27, 2014 at 05:40 PM
+-- Generation Time: Aug 28, 2014 at 06:31 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.16
 
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `account`, `password`, `rid`, `time`, `tid`) VALUES
-(1, 'admin', 'admin', 1, '1409160051778', NULL),
+(1, 'admin', 'admin', 1, '1409246726835', NULL),
 (2, '1', '1', 5, '1407894986555', NULL);
 
 -- --------------------------------------------------------
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `class` (
   `sort` int(11) DEFAULT '0' COMMENT '排序值',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='班级' AUTO_INCREMENT=14 ;
 
 --
 -- Dumping data for table `class`
@@ -97,7 +97,8 @@ INSERT INTO `class` (`id`, `uuid`, `name`, `tid`, `sid`, `year`, `sort`) VALUES
 (9, '20030001', '2003级01班', NULL, 1, '2003', 55),
 (10, '20030002', '2003级02班', NULL, 1, '2003', 33),
 (11, '20040001', '2004级01班', NULL, 1, '2004', 36),
-(12, '20070001', '2007级01班', NULL, 1, '2007', 55);
+(12, '20070001', '2007级01班', NULL, 1, '2007', 55),
+(13, '20010001', '2001级01班', NULL, -1, '2001', NULL);
 
 -- --------------------------------------------------------
 
@@ -342,7 +343,14 @@ CREATE TABLE IF NOT EXISTS `teacher` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='教师信息表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='教师信息表' AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `teacher`
+--
+
+INSERT INTO `teacher` (`id`, `uuid`, `name`, `identity`, `rid`, `sid`, `sex`, `birth`, `birthplace`, `national`, `feature`, `desc`, `education`, `address`, `seniority`, `phone`, `email`, `status`, `sort`, `image`, `time`) VALUES
+(1, '10703080', '王大狗', '130182197809231130', 3, 1, 1, '1978-09-23', '河北省石家庄市南古村', '汉', 0, '暂无评论', 0, '河北省石家庄市桥西区', 1, '13983154436', 'wangdagou@163.com', 1, 99, NULL, NULL);
 
 -- --------------------------------------------------------
 

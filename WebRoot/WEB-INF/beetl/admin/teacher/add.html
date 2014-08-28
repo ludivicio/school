@@ -1,8 +1,211 @@
 <# layout("/admin/common/_layout.html") { #>
 
+<div class="row">
+	<div class="col-md-12">
+		<div class="widget">
 
-中文测试
+			<div class="widget-head">
+				<div class="pull-left">录入教师信息</div>
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="widget-content">
+				<div class="padd">
+
+					<form class="form-horizontal" action="${CONTEXT_PATH}/admin/teacher/save" method="post" enctype="multipart/form-data" role="form">
+
+						<input type="hidden" value="${teacher.id!}" name="teacher.id" />
+						
+						<div class="form-group">
+						
+							<label class="control-label col-lg-1" for="teacher.name">姓 名</label>
+							<div class="col-lg-3 ${exist( nameMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.name"
+									value="${teacher.name!}" />
+							</div>
+								<p class="help-block col-lg-2">教师的完整名称（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.identity">身份证</label>
+							<div class="col-lg-3 ${ exist( identityMsg!, 'has-error')}">
+								<input type="text" class="form-control input-sm" name="teacher.identity"
+									value="${teacher.identity!}" />
+							</div>
+								<p class="help-block col-lg-2">教师的身份证（必填项）</p>
+
+						</div>
+
+						<div class="form-group">
+						
+						 	<label class="control-label col-lg-1" for="teacher.sid">学校名称</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="teacher.sid">
+								<# for(school in schoolList!){ #>
+									<option value="${school.id!}" ${ school.id! == class.sid! ? "checked='checked'" : "" }>${school.name!}</option>
+								<# } #>
+								</select>
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.sex">性 别</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="teacher.sex">
+									<option value="0" ${check(teacher.sex!, 0, "checked='checked'")} >女</option>
+									<option value="1" ${check(teacher.sex!, 1, "checked='checked'")} >男</option> 
+								</select>
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+						</div>
+						
+						<div class="form-group">
+							
+							<label class="control-label col-lg-1" for="teacher.birthplace">籍 贯</label>
+							<div class="col-lg-5 ${ exist( birthplaceMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.birthplace" value="${teacher.birthplace!}" />
+								<p class="help-block">籍贯精确到市（县）</p>
+							</div>
+							
+							<label class="control-label col-lg-1" for="teacher.birth">出生日期</label>
+							<div class="col-lg-3 ${ exist( birthMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.birth"
+									value="${teacher.birth!}" />
+								<p class="help-block">出生日期例【1992-10-11】</p>
+							</div>
+						</div>
 
 
+						<div class="form-group">
+						
+						 	<label class="control-label col-lg-1" for="teacher.national">民 族</label>
+							<div class="col-lg-3 ${ exist( nationalMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.national" value="${teacher.national!}" />
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.feature">政治面貌</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="teacher.feature">
+									<option value="0" ${check(teacher.feature!, 0, "checked='checked'")} >党员</option>
+									<option value="1" ${check(teacher.feature!, 1, "checked='checked'")} >团员</option> 
+									<option value="2" ${check(teacher.feature!, 2, "checked='checked'")} >群众</option> 
+								</select>
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+						</div>
+
+						<div class="form-group">
+							
+							<label class="control-label col-lg-1" for="teacher.address">家庭住址</label>
+							<div class="col-lg-5 ${ exist( addressMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.address" value="${teacher.address!}" />
+								<p class="help-block">填写教师的完整地址（包括省份、地区）</p>
+							</div>
+							
+							<label class="control-label col-lg-1" for="teacher.education">学 历</label>
+							<div class="col-lg-3">
+								<select class="form-control input-sm" name="teacher.education">
+									<option value="1" ${check(teacher.education!, 1, "checked='checked'")} >学士</option> 
+									<option value="2" ${check(teacher.education!, 2, "checked='checked'")} >硕士</option> 
+									<option value="3" ${check(teacher.education!, 3, "checked='checked'")} >博士</option> 
+								</select>
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+						</div>
+
+						<div class="form-group">
+						
+						 	<label class="control-label col-lg-1" for="teacher.seniority">教 龄</label>
+							<div class="col-lg-3 ${ exist( seniorityMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.seniority" value="${teacher.seniority!}" />
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.phone">电 话</label>
+							<div class="col-lg-3 ${ exist( phoneMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.phone" value="${teacher.phone!}" />
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+						</div>
+
+						<div class="form-group">
+						
+						 	<label class="control-label col-lg-1" for="teacher.email">邮 箱</label>
+							<div class="col-lg-3 ${ exist( emailMsg!, 'has-error') }">
+								<input type="text" class="form-control input-sm" name="teacher.email" value="${teacher.email!}" />
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.status">教师状态</label>
+							<div class="col-lg-3 ${ exist( statusMsg!, 'has-error') }">
+								<select class="form-control input-sm" name="teacher.status">
+									<option value="1" ${check(teacher.status!, 1, "checked='checked'")} >在职</option> 
+									<option value="2" ${check(teacher.status!, 2, "checked='checked'")} >病退</option> 
+									<option value="3" ${check(teacher.status!, 3, "checked='checked'")} >退休</option> 
+									<option value="4" ${check(teacher.status!, 4, "checked='checked'")} >休假</option> 
+								</select>
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-lg-1" for="teacher.image">图 片</label>
+							<div class="col-lg-3 ${ exist( imageMsg!, 'has-error') }">
+								<input type="file" class="form-control input-sm" name="teacher.image" value="${teacher.image!}" />
+							</div>
+							<p class="help-block col-lg-2">（必填项）</p>
+							
+							<label class="control-label col-lg-1" for="teacher.sort">排序值</label>
+							<div class="col-lg-3">
+								<input type="text" class="form-control input-sm" name="teacher.sort" value="${teacher.sort!}" />
+								<p class="help-block">0~255之间的整数，数值越大，排序越靠前，默认为0（可选）</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-lg-1" for="teacher.rid">角 色</label>
+							<div class="col-lg-3">
+								<input type="text" class="form-control input-sm" name="teacher.rid"
+									value="任课老师" disabled="disabled"/>
+								<p class="help-block">教师的角色【任课老师】</p>
+							</div>
+							
+							<label class="control-label col-lg-1" for=""></label>
+							<div class="col-lg-3">
+								
+								<p class="help-block col-lg-2"></p>
+							</div>
+						</div>
+						
+						<div class="form-group">
+	
+							<label class="control-label col-lg-1" for="teacher.desc">教师简介</label>
+							<div class="col-lg-9 ${ exist( descMsg!, 'has-error') }">
+								<textarea class="form-control" name="teacher.desc">${teacher.desc!}</textarea>
+							</div>
+							<p class="help-block col-lg-2">（必填）</p>
+		
+						</div>
+
+						<hr />
+						<div class="form-group ">
+							<div class="col-lg-offset-1 col-lg-9">
+								<button type="submit" class="btn btn-primary">提 交</button>
+								<button type="reset" class="btn btn-danger">重 置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div class="widget-foot">
+
+			</div>
+			
+		</div>
+	</div>
+</div>
 
 <# } #>
