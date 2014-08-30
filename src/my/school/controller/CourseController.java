@@ -9,7 +9,9 @@ import my.school.config.Constants;
 import my.school.kit.ParaKit;
 import my.school.kit.UUID;
 import my.school.model.Course;
+import my.school.validator.SaveCourseValidator;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -111,8 +113,9 @@ public class CourseController extends Controller {
 	}
 
 	/**
-	 * 添加/修改科室信息处理方法
+	 * 添加/修改课程信息处理方法
 	 */
+	@Before(SaveCourseValidator.class)
 	public void save() {
 		Course course = getModel(Course.class);
 		// 排序位置

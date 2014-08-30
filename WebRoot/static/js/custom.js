@@ -56,12 +56,12 @@ $(document).ready(function() {
 });
 
 // 窗口大小发生变化时，重新计算高度
-$(window).resize(autosize);
+//$(window).resize(autosize);
 
 // 页面载入完成时，重新计算高度
-$(document).ready(function() {
-    autosize();
-});
+//$(document).ready(function() {
+//    autosize();
+//});
 
 /**
  * 重新计算浏览器的高度

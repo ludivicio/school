@@ -86,8 +86,8 @@
 						<tr>
 							<td>${class.uuid!}</td>
 							<td>${class.name!}</td>
-							<td>${@class.getTeacherName()}</td>
-							<td>${@class.getSchoolName()}</td>
+							<td>${class.teacher.name!}</td>
+							<td>${class.school.name!}</td>
 							<td align="center">
 								<a href="${CONTEXT_PATH}/admin/class/edit/${class.id!}">编辑</a>
 								&nbsp;&nbsp;

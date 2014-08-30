@@ -28,8 +28,7 @@ import com.jfinal.upload.UploadFile;
  */
 @Before(StudentInterceptor.class)
 public class StudentController extends Controller {
-	
-	
+
 	public void index() {
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
@@ -45,13 +44,15 @@ public class StudentController extends Controller {
 		if (page < 1) {
 			page = 1;
 		}
-		// 读取所有的科室信息。
+		
+		// 读取所有的学生信息
 		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE);
 		setAttr("studentList", studentList);
+		
 		setAttr("searchUuid", "");
 		setAttr("searchName", "");
-		setAttr("searchSex",-1);
-		setAttr("searchFeature", -1);
+		setAttr("searchSex", -1);
+		
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 		render("index.html");
 	}
@@ -59,25 +60,31 @@ public class StudentController extends Controller {
 	public void add() {
 		render("add.html");
 	}
-	
-	public void getClassBySchool(){
-		int schoolId = getParaToInt("schoolId");
-		if(schoolId>0){
-			List<Class> classList= Class.dao.getClassListBySid(schoolId);
-			if(classList.size()>0){
-				
-				setAttr("classList",classList);
-				setAttr("status", "success");
-			}else{
-				setAttr("status", "failed");
+
+	public void getClassBySchool() {
+
+		int sid = ParaKit.paramToInt(getPara(0), -1);
+
+		if (sid > 0) {
+
+			List<Class> classList = Class.dao.getClassesBySchoolId(sid);
+
+			Map<String, String> result = new HashMap<String, String>();
+
+			for (Class clazz : classList) {
+				result.put(String.valueOf(clazz.get("id")), clazz.getStr("name"));
 			}
-		}else{
-			setAttr("status", "failed");
+
+			renderJson("json", result);
+
+			return;
+
 		}
-		
-		renderJson();
-		
+
+		renderJson("json", "");
+
 	}
+
 	/**
 	 * 搜索
 	 */
@@ -91,7 +98,6 @@ public class StudentController extends Controller {
 			queryParams.put("uuid", getPara("uuid"));
 			queryParams.put("name", getPara("name"));
 			queryParams.put("sex", getPara("sex"));
-			queryParams.put("feature", getPara("feature"));
 
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
@@ -111,14 +117,13 @@ public class StudentController extends Controller {
 
 		if (queryParams != null) {
 
-			
 			String uuid = queryParams.get("uuid");
 
 			if (!ParaKit.isEmpty(uuid)) {
 				sb.append(" and uuid like ?");
 				params.add("%" + uuid + "%");
 			}
-			
+
 			String name = queryParams.get("name");
 
 			if (!ParaKit.isEmpty(name)) {
@@ -128,22 +133,15 @@ public class StudentController extends Controller {
 
 			int sex = Integer.valueOf(queryParams.get("sex").toString());
 
-			if (sex>-1) {
+			if (sex > -1) {
 				sb.append(" and sex like ?");
 				params.add("%" + sex + "%");
 			}
 
-			int feature = Integer.valueOf(queryParams.get("feature").toString());
-
-			if (feature>-1) {
-				sb.append(" and feature like ?");
-				params.add("%" + feature + "%");
-			}
 			setAttr("searchUuid", uuid);
 			setAttr("searchName", name);
 			setAttr("searchSex", sex);
-			setAttr("searchFeature", feature);
-			;
+
 			setAttr("searchPage", Constants.SEARCH_PAGE);
 
 		}
@@ -169,19 +167,19 @@ public class StudentController extends Controller {
 		// 保存文件并获取保存在数据库中的路径
 		String savePath = UploadKit.saveAvatarImage(file.getFile());
 
-		Student student= getModel(Student.class);
+		Student student = getModel(Student.class);
 
 		System.out.println("savePath: " + savePath);
 
 		// 设置头像路径
 		student.set("image", savePath);
 
-		//排序位置
-		if(student.get("sort") == null || student.get("sort").equals("")){
-			student.set("sort",1);
+		// 排序位置
+		if (student.get("sort") == null || student.get("sort").equals("")) {
+			student.set("sort", 1);
 		}
 		if (null == student.getInt("id")) {
-			//设置注册时间
+			// 设置注册时间
 			student.set("time", DateKit.getDateTime());
 			student.set("uuid", UUID.randomUUID());
 			student.save();
@@ -198,7 +196,7 @@ public class StudentController extends Controller {
 	 */
 	public void edit() {
 		int studentId = getParaToInt(0);
-		setAttr("student",Student.dao.findById(studentId));
+		setAttr("student", Student.dao.findById(studentId));
 		render("add.html");
 	}
 
@@ -206,18 +204,17 @@ public class StudentController extends Controller {
 	 * 删除科室信息
 	 */
 	public void delete() {
-		
+
 		int studentId = ParaKit.paramToInt(getPara(0), -1);
-		
-		if(studentId>-1){
-			if(Student.dao.deleteById(studentId)){
-				renderJson("msg","删除成功！");
+
+		if (studentId > -1) {
+			if (Student.dao.deleteById(studentId)) {
+				renderJson("msg", "删除成功！");
 			}
-		}else{
-			renderJson("msg","删除失败！");
+		} else {
+			renderJson("msg", "删除失败！");
 		}
-	
+
 	}
 
-	
 }

@@ -12,6 +12,9 @@ import com.jfinal.plugin.activerecord.Page;
 
 @SuppressWarnings("serial")
 public class Teacher extends Model<Teacher> {
+
+	private School school;
+
 	public static final Teacher dao = new Teacher();
 
 	/**
@@ -47,7 +50,7 @@ public class Teacher extends Model<Teacher> {
 	 * @param cid
 	 * @return
 	 */
-	public Teacher getTeacherByClassId(int cid) {
+	public Teacher getTeachersByClassId(int cid) {
 		Class clazz = Class.dao.findById(cid);
 		return clazz.getTeacher();
 	}
@@ -61,6 +64,19 @@ public class Teacher extends Model<Teacher> {
 	 */
 	public Page<Teacher> paginate(int pageNumber, int pageSize) {
 		return paginate(pageNumber, pageSize, "select *", "from teacher order by id desc");
+	}
+
+	public School getSchool() {
+
+		if (school == null) {
+			school = School.dao.findById(get("sid"));
+		}
+		System.out.println("school.name = " + school.getStr("name"));
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
 	}
 
 }

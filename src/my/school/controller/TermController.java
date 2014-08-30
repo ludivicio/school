@@ -1,11 +1,12 @@
 package my.school.controller;
 
-import java.util.List;
-
+import my.school.config.Constants;
+import my.school.kit.ParaKit;
 import my.school.model.Term;
 import my.school.service.TermService;
 
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Page;
 
 /**
  * TermController
@@ -17,9 +18,16 @@ public class TermController extends Controller {
 
 	public void index() {
 
-		List<Term> terms = Term.dao.getTerms();
+		int page = ParaKit.paramToInt(getPara("p"), 1);
 
-		setAttr("terms", terms);
+		if (page < 1) {
+			page = 1;
+		}
+
+		// 读取所有的学期信息
+		Page<Term> termList = Term.dao.paginate(page, Constants.PAGE_SIZE);
+
+		setAttr("termList", termList);
 
 		render("index.html");
 	}

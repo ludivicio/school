@@ -27,8 +27,7 @@ import com.jfinal.upload.UploadFile;
  */
 @Before(TeacherInterceptor.class)
 public class TeacherController extends Controller {
-	
-	
+
 	public void index() {
 		// 判断当前是否是搜索的数据进行的分页
 		// 如果是搜索的数据，则跳转至search方法处理
@@ -47,10 +46,10 @@ public class TeacherController extends Controller {
 		// 读取所有的教师
 		Page<Teacher> teacherList = Teacher.dao.paginate(page, Constants.PAGE_SIZE);
 		setAttr("teacherList", teacherList);
+		
 		setAttr("searchUuid", "");
 		setAttr("searchName", "");
-		setAttr("searchSex",-1);
-		setAttr("searchFeature", -1);
+		setAttr("searchSex", -1);
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 		render("index.html");
 	}
@@ -72,7 +71,6 @@ public class TeacherController extends Controller {
 			queryParams.put("uuid", getPara("uuid"));
 			queryParams.put("name", getPara("name"));
 			queryParams.put("sex", getPara("sex"));
-			queryParams.put("feature", getPara("feature"));
 
 			setSessionAttr(Constants.SEARCH_SESSION_KEY, queryParams);
 
@@ -92,14 +90,13 @@ public class TeacherController extends Controller {
 
 		if (queryParams != null) {
 
-			
 			String uuid = queryParams.get("uuid");
 
 			if (!ParaKit.isEmpty(uuid)) {
 				sb.append(" and uuid like ?");
 				params.add("%" + uuid + "%");
 			}
-			
+
 			String name = queryParams.get("name");
 
 			if (!ParaKit.isEmpty(name)) {
@@ -109,22 +106,15 @@ public class TeacherController extends Controller {
 
 			int sex = Integer.valueOf(queryParams.get("sex").toString());
 
-			if (sex>-1) {
+			if (sex > -1) {
 				sb.append(" and sex like ?");
 				params.add("%" + sex + "%");
 			}
 
-			int feature = Integer.valueOf(queryParams.get("feature").toString());
-
-			if (feature>-1) {
-				sb.append(" and feature like ?");
-				params.add("%" + feature + "%");
-			}
 			setAttr("searchUuid", uuid);
 			setAttr("searchName", name);
 			setAttr("searchSex", sex);
-			setAttr("searchFeature", feature);
-			;
+
 			setAttr("searchPage", Constants.SEARCH_PAGE);
 
 		}
@@ -140,7 +130,7 @@ public class TeacherController extends Controller {
 	}
 
 	/**
-	 * 添加/修改科室信息处理方法
+	 * 添加/修改教师信息处理方法
 	 */
 	@Before(SaveTeacherValidator.class)
 	public void save() {
@@ -151,24 +141,24 @@ public class TeacherController extends Controller {
 		// 保存文件并获取保存在数据库中的路径
 		String savePath = UploadKit.saveAvatarImage(file.getFile());
 
-		Teacher teacher= getModel(Teacher.class);
+		Teacher teacher = getModel(Teacher.class);
 
 		System.out.println("savePath: " + savePath);
 
 		// 设置头像路径
 		teacher.set("image", savePath);
-		
-		//设置教师为教课老师
+
+		// 设置教师为教课老师
 		teacher.set("rid", 4);
-		
-		//排序位置
-		if(teacher.get("sort") == null || teacher.get("sort").equals("")){
-			teacher.set("sort",1);
+
+		// 排序位置
+		if (teacher.get("sort") == null || teacher.get("sort").equals("")) {
+			teacher.set("sort", 1);
 		}
 		if (null == teacher.getInt("id")) {
-			//设置注册时间
+			// 设置注册时间
 			teacher.set("time", DateKit.getDateTime());
-			
+
 			teacher.set("uuid", UUID.randomUUID());
 			teacher.save();
 		} else {
@@ -184,26 +174,24 @@ public class TeacherController extends Controller {
 	 */
 	public void edit() {
 		int teacherId = getParaToInt(0);
-		setAttr("teacher",Teacher.dao.findById(teacherId));
+		setAttr("teacher", Teacher.dao.findById(teacherId));
 		render("add.html");
 	}
 
 	/**
-	 * 删除科室信息
+	 * 删除教师信息
 	 */
 	public void delete() {
 		int teacherId = ParaKit.paramToInt(getPara(0), -1);
-		
-		if(teacherId>-1){
-			if(Teacher.dao.deleteById(teacherId)){
-				renderJson("msg","删除成功！");
+
+		if (teacherId > -1) {
+			if (Teacher.dao.deleteById(teacherId)) {
+				renderJson("msg", "删除成功！");
 			}
-		}else{
-			renderJson("msg","删除失败！");
+		} else {
+			renderJson("msg", "删除失败！");
 		}
-		
-		
+
 	}
 
-	
 }

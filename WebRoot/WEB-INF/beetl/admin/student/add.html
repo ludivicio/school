@@ -1,96 +1,6 @@
 <# layout("/admin/common/_layout.html") { #>
 
 
-<script type="text/javascript">
-$(document).ready(function() {
-	
-	$.ajax({
-		
-		url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
-		
-		data: {
-			
-			'schoolId' : $('#studentSchool').val(),
-		},
-		success: function(data) {
-			
-			if(data.status == "success") {
-    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
-	    		$.each(data.classList, function (index,trem) { 
-	    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
-	    		}); 
-	    		selectStr+="</select>";
-    			var $select = $(selectStr);
-    	        
-	    		$("#insertClass").empty();
-	    		$("#insertClass").append($select);
-			} else if(data.status == "failed") {
-				var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
-	    		$("#insertClass").empty();
-	    		$("#insertClass").append($select);
-				art.dialog({
-					title: "获取班级失败",
-					icon: "error",
-				    content : "获取班级信息失败！<br/><br/>",
-					cancelVal: '返回',
-					cancel: true ,
-				});
-				
-			}
-			
-		}
-	});
-	
-	$('#studentSchool').change(function() {
-		
-		$.ajax({
-			
-			url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
-    		
-    		data: {
-    			
-    			'schoolId' : $('#studentSchool').val(),
-    		},
-			success: function(data) {
-				
-				if(data.status == "success") {
-	    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
-    	    		$.each(data.classList, function (index,trem) { 
-    	    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
-    	    		}); 
-    	    		selectStr+="</select>";
-        			var $select = $(selectStr);
-	    	        
-		    		$("#insertClass").empty();
-		    		$("#insertClass").append($select);
-				} else if(data.status == "failed") {
-					var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
-		    		$("#insertClass").empty();
-		    		$("#insertClass").append($select);
-					art.dialog({
-						title: "获取班级失败",
-						icon: "error",
-					    content : "获取班级信息失败！<br/><br/>",
-						cancelVal: '返回',
-						cancel: true ,
-					});
-					
-				}
-				
-    		}
-    	});
-		
-	});
-	
-	
-	
-	
-});
-
-
-
-
-</script>
 <div class="row">
 	<div class="col-md-12">
 		<div class="widget">
@@ -129,19 +39,20 @@ $(document).ready(function() {
 						
 						 	<label class="control-label col-lg-1" for="student.sid">学校名称</label>
 							<div class="col-lg-3">
-								<select class="form-control input-sm" name="student.sid" id="studentSchool">
-								<# for(school in schoolList!){ #>
-									<option value="${school.id!}" ${ school.id! == class.sid! ? "checked='checked'" : "" }>${school.name!}</option>
-								<# } #>
+								<select class="form-control input-sm" name="student.sid" >
+									<option value="-1">请选择学校</option>
+									<# for(school in schoolList!){ #>
+										<option value="${school.id!}" ${ school.id! == class.sid! ? "selected=selected" : "" }>${school.name!}</option>
+									<# } #>
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>
 						
 						 	<label class="control-label col-lg-1" for="student.cid">班 级</label>
 							<div class="col-lg-3" id="insertClass">
-								<select class="form-control input-sm" name="student.cid" disabled = "disabled">
+								<select class="form-control input-sm" name="student.cid">
 								
-									<option value="${class.id!}" ></option>
+									<option value="-1" >请选择班级</option>
 								
 								</select>
 								
@@ -267,5 +178,121 @@ $(document).ready(function() {
 		</div>
 	</div>
 </div>
+
+
+<script type="text/javascript">
+	
+	
+	function getClass() {
+		
+		var value = $('select[name="student.sid"]').val();
+		$.getJSON("${CONTEXT_PATH}/admin/student/getClassBySchool/" + value, function (data) {
+	        
+			//对请求返回的JSON格式进行分解加载
+	        $.each(data.json, function(idx, item) {
+	            $('select[name="student.cid"]').append($("<option/>").text(item).attr("value", idx));
+	        });
+			
+	    });
+	}
+	
+	
+	$(document).ready(function() {
+		
+		
+		$('select[name="student.sid"]').change(function(){  
+
+			getClass();
+			
+		});
+	});
+		
+		
+		
+		
+		
+// 		$.ajax({
+			
+// 			url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
+			
+// 			data: {
+				
+// 				'schoolId' : $('#studentSchool').val(),
+// 			},
+// 			success: function(data) {
+				
+// 				if(data.status == "success") {
+// 	    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
+// 		    		$.each(data.classList, function (index,trem) { 
+// 		    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
+// 		    		}); 
+// 		    		selectStr+="</select>";
+// 	    			var $select = $(selectStr);
+	    	        
+// 		    		$("#insertClass").empty();
+// 		    		$("#insertClass").append($select);
+// 				} else if(data.status == "failed") {
+	// 				var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
+	// 	    		$("#insertClass").empty();
+	// 	    		$("#insertClass").append($select);
+	// 				art.dialog({
+	// 					title: "获取班级失败",
+	// 					icon: "error",
+	// 				    content : "获取班级信息失败！<br/><br/>",
+	// 					cancelVal: '返回',
+	// 					cancel: true ,
+	// 				});
+					
+// 				}
+				
+// 			}
+// 		});
+		
+// 		$('#studentSchool').change(function() {
+			
+// 			$.ajax({
+				
+// 				url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
+	    		
+// 	    		data: {
+	    			
+// 	    			'schoolId' : $('#studentSchool').val(),
+// 	    		},
+// 				success: function(data) {
+					
+// 					if(data.status == "success") {
+// 		    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
+// 	    	    		$.each(data.classList, function (index,trem) { 
+// 	    	    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
+// 	    	    		}); 
+// 	    	    		selectStr+="</select>";
+// 	        			var $select = $(selectStr);
+		    	        
+// 			    		$("#insertClass").empty();
+// 			    		$("#insertClass").append($select);
+// 					} else if(data.status == "failed") {
+// 						var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
+// 			    		$("#insertClass").empty();
+// 			    		$("#insertClass").append($select);
+// 						art.dialog({
+// 							title: "获取班级失败",
+// 							icon: "error",
+// 						    content : "获取班级信息失败！<br/><br/>",
+// 							cancelVal: '返回',
+// 							cancel: true ,
+// 						});
+						
+// 					}
+					
+// 	    		}
+// 	    	});
+			
+// 		});
+		
+// 	});
+
+</script>
+
+
 
 <# } #>

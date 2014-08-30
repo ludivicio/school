@@ -36,7 +36,7 @@
 								<select class="form-control input-sm" name="class.sid">
 									<option value="-1">请选择学校</option>
 								<# for(school in schoolList!){ #>
-									<option value="${school.id!}" ${ school.id! == class.sid! ? "checked='checked'" : "" }>${school.name!}</option>
+									<option value="${school.id!}" ${ school.id! == class.sid! ? "selected=selected" : "" }>${school.name!}</option>
 								<# } #>
 								</select>
 							</div>
@@ -49,8 +49,9 @@
 							<label class="control-label col-lg-2" for="class.tid">班主任</label>
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="class.tid">
+									<option value="-1">请选择教师</option>
 								<# for(teacher in teacherList!){ #>
-									<option value="${teacher.id!}" ${teacher.id! == class.tid! ? "checked='checked'" : ""}>${teacher.name!}</option>
+									<option value="${teacher.id!}" ${ teacher.id! == class.tid! ? "selected=selected" : "" }>${teacher.name!}</option>
 								<# } #>
 								</select>
 							</div>
@@ -104,6 +105,7 @@
 
 	$(document).ready(function() {
 		
+		getTeacher();
 		
 		$('select[name="class.sid"]').change(function(){  
 

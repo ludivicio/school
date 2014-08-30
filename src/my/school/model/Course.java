@@ -1,5 +1,7 @@
 package my.school.model;
 
+import java.util.List;
+
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -11,6 +13,26 @@ import com.jfinal.plugin.activerecord.Page;
 @SuppressWarnings("serial")
 public class Course extends Model<Course> {
 	public static final Course dao = new Course();
+
+	/**
+	 * 获取所有的课程信息
+	 * 
+	 * @return
+	 */
+	public List<Course> getCourses() {
+		return Course.dao.find("select * from course");
+	}
+
+	/**
+	 * 根据年级获取该年级所学的课程
+	 * 
+	 * @param gid
+	 * @return
+	 */
+	public List<Course> getCoursesByGradeId(int gid) {
+		return Course.dao.find(
+				"select * from course where id in (select cid from assign where gid = ? )", gid);
+	}
 
 	/**
 	 * 分页获取数据

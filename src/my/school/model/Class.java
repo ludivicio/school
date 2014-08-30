@@ -28,6 +28,17 @@ public class Class extends Model<Class> {
 	}
 
 	/**
+	 * 根据SchoolId获取class列表
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
+	public List<Class> getClassesBySchoolId(int sid) {
+		return Class.dao.find("select * from class where sid = ?", sid);
+	}
+
+	/**
 	 * 获取特定年份，特定学校下班级的数量
 	 * 
 	 * @param year
@@ -40,44 +51,6 @@ public class Class extends Model<Class> {
 				year, sid);
 		return classes.size();
 
-	}
-
-	
-	/**
-	 * 根据编号获取班主任名称
-	 */
-	public String getTeacherName() {
-
-		Teacher teacher = Teacher.dao.findById(get("id"));
-		if (teacher != null) {
-			return teacher.get("name");
-		} else {
-			return "--";
-		}
-	}
-
-	/**
-	 * 根据编号获取学校
-	 */
-	public String getSchoolName() {
-		School school = School.dao.findById(get("id"));
-		if (school != null) {
-			return school.get("name");
-		} else {
-			return "--";
-		}
-
-	}
-
-	/**
-	 * 根据SchoolId获取class列表
-	 * 
-	 * @param pageNumber
-	 * @param pageSize
-	 * @return
-	 */
-	public List<Class> getClassListBySid(int sid) {
-		return Class.dao.find("select * from class where sid = ?", sid);
 	}
 
 	public Page<Class> paginate(int pageNumber, int pageSize) {
@@ -100,7 +73,7 @@ public class Class extends Model<Class> {
 	public School getSchool() {
 
 		if (school == null) {
-			school = School.dao.findById(get("id"));
+			school = School.dao.findById(get("sid"));
 		}
 
 		return school;

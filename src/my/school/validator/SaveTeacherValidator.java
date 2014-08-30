@@ -28,8 +28,8 @@ public class SaveTeacherValidator extends Validator {
 		validateString("teacher.birthplace", 6,50, "birthplaceMsg", "请输入6-50字的合法的籍贯");
 		validateString("teacher.desc", 10,500, "descMsg", "请输入20-500之间的描述");
 		validateString("teacher.address", 6,50, "addressMsg", "请输入6-50字的合法的地址");
-		validateInteger("teacher.seniority",1 ,70,"seniorityMsg", "请输合法的教龄教龄介于1-70!");
-		validateRegex("teacher.phone","1[0-10]{9}", "phoneMsg", "请输入合法的手机号!");
+		validateInteger("teacher.seniority",1, 45,"seniorityMsg", "请输合法的教龄教龄介于1-45!");
+		validateRegex("teacher.phone","1[0-9]{10}", "phoneMsg", "请输入合法的手机号!");
 		validateEmail("teacher.email", "emailMsg", "请输入合法的email!");
 
 		

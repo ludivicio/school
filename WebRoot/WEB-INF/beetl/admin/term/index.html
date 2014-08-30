@@ -28,7 +28,7 @@
 					</thead>
 					<tbody>
 
-						<# for(term in terms) { #>
+						<# for(term in termList.list!) { #>
 						<tr>
 							<td>${term.name}</td>
 							<td>${term.start}</td>
@@ -40,13 +40,18 @@
 				</table>
 				<div class="widget-foot">
 					
-					<ul class="pager">
-					    <li><a href="#">首页</a></li>
-						<li><a href="#">上一页</a></li>
-						<li><a href="#">下一页</a></li>
-						<li><a href="#">末页</a></li>
+					<ul class="pager pull-left">
+					    <li><a href="${CONTEXT_PATH}/admin/term/?p=1">首页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/term/?p=<# if(termList.pageNumber <= 1) { #>1<# } else { #>${termList.pageNumber - 1}<# } #>">上一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/term/?p=<# if(termList.pageNumber >= termList.totalPage) { #>${termList.totalPage}<# } else { #>${termList.pageNumber + 1}<# } #>">下一页</a></li>
+						<li><a href="${CONTEXT_PATH}/admin/term/?p=${termList.totalPage}">末页</a></li>
 					</ul>
-
+					
+					<div class="pull-right">
+						<p class="help-block">当前第 ${termList.pageNumber} 页，共计 ${termList.totalPage} 页，每页 ${termList.pageSize} 条数据</p>
+					</div>
+					
+					<div class="clearfix"></div>
 				</div>
 			</div>
 		</div>

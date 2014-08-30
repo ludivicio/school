@@ -20,18 +20,18 @@
 		  	<div class="form-group">
 		    	<div class="input-group">
 		      		<div class="input-group-addon">编号</div>
-		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="学校编号">
+		      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="课程编号">
 		    	</div>
 		  	</div>
 		  	
 		  	<div class="form-group">
 		    	<div class="input-group">
 		      		<div class="input-group-addon">名称</div>
-		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="学校名称">
+		      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="课程名称">
 		    	</div>
 		  	</div>
 		  	
-		  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+		  	<input type="submit" class="btn btn-info"  value="查询" />	
 		</form>
 		
 	</div>
@@ -64,9 +64,9 @@
 						<# for(course in courseList.list!){ #>
 						
 						<tr>
-							<td align="center">${course.uuid!}</td>
+							<td>${course.uuid!}</td>
 							<td>${course.name!}</td> 
-							<td>${course.remark!}</td> 
+							<td>${strutil.subStringTo(course.remark!, 0, 20)}...</td> 
 						
 							<td align="center">
 								<a href="/admin/course/edit/${course.id!}">编辑</a>

@@ -147,7 +147,9 @@ public class ClassController extends Controller {
 
 		System.out.println("year: " + year);
 
-		if (ParaKit.isEmpty(clazz.getStr("id"))) {
+		System.out.println("id: " + clazz.getInt("id"));
+		
+		if (clazz.getInt("id") == null) {
 
 			// 首先找到该学校该年份所有的班级数量
 			int count = Class.dao.getCount(year, sid);
@@ -196,7 +198,7 @@ public class ClassController extends Controller {
 			boolean result = clazz.update();
 			if (result) {
 
-				Teacher oldTeacher = Teacher.dao.getTeacherByClassId(clazz.getInt("id"));
+				Teacher oldTeacher = Teacher.dao.getTeachersByClassId(clazz.getInt("id"));
 				Teacher newTeacher = Teacher.dao.findById(clazz.getInt("tid"));
 
 				if (oldTeacher.getInt("id") != newTeacher.getInt("id")) {
