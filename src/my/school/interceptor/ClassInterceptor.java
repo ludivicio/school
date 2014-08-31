@@ -21,10 +21,10 @@ public class ClassInterceptor implements Interceptor {
 
 		ai.invoke();
 
-		// 生成入学年份，从2001年开始
+		// 生成入学年份，从2005年开始
 		List<String> years = new ArrayList<String>();
 		int currentYear = DateKit.getYear();
-		for (int i = 2001; i <= currentYear; i++) {
+		for (int i = 2005; i <= currentYear; i++) {
 			years.add(String.valueOf(i));
 		}
 

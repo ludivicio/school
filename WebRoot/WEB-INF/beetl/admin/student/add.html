@@ -42,7 +42,7 @@
 								<select class="form-control input-sm" name="student.sid" >
 									<option value="-1">请选择学校</option>
 									<# for(school in schoolList!){ #>
-										<option value="${school.id!}" ${ school.id! == class.sid! ? "selected=selected" : "" }>${school.name!}</option>
+										<option value="${school.id!}" ${ school.id! == student.sid! ? "selected=selected" : "" }>${school.name!}</option>
 									<# } #>
 								</select>
 							</div>
@@ -51,9 +51,10 @@
 						 	<label class="control-label col-lg-1" for="student.cid">班 级</label>
 							<div class="col-lg-3" id="insertClass">
 								<select class="form-control input-sm" name="student.cid">
-								
 									<option value="-1" >请选择班级</option>
-								
+								<# for(class in classList!){ #>
+									<option value="${class.id!}" ${ class.id! == student.cid! ? "selected=selected" : "" }>${class.name!}</option>
+								<# } #>
 								</select>
 								
 							</div>
@@ -65,8 +66,8 @@
 							<label class="control-label col-lg-1" for="student.sex">性 别</label>
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="student.sex">
-									<option value="0" ${check(student.sex!, 0, "checked='checked'")} >女</option>
-									<option value="1" ${check(student.sex!, 1, "checked='checked'")} >男</option> 
+									<option value="0" ${ student.sex! == 0 ? "selected=selected" : "" } >男</option>
+									<option value="1" ${ student.sex! == 1 ? "selected=selected" : "" } >女</option> 
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>
@@ -74,10 +75,9 @@
 							<label class="control-label col-lg-1" for="student.status">学生状态</label>
 							<div class="col-lg-3 ${ exist( statusMsg!, 'has-error') }">
 								<select class="form-control input-sm" name="student.status">
-									<option value="1" ${check(student.status!, 1, "checked='checked'")} >在校</option> 
-									<option value="2" ${check(student.status!, 2, "checked='checked'")} >退学</option> 
-									<option value="3" ${check(student.status!, 3, "checked='checked'")} >休学</option> 
-									<option value="4" ${check(student.status!, 4, "checked='checked'")} >请假</option> 
+									<option value="0" ${ student.status! == 0 ? "selected=selected" : "" } >在校</option> 
+									<option value="1" ${ student.status! == 1 ? "selected=selected" : "" } >退学</option> 
+									<option value="2" ${ student.status! == 2 ? "selected=selected" : "" } >休学</option> 
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>
@@ -112,9 +112,8 @@
 							<label class="control-label col-lg-1" for="student.feature">政治面貌</label>
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="student.feature">
-									<option value="0" ${check(student.feature!, 0, "checked='checked'")} >党员</option>
-									<option value="1" ${check(student.feature!, 1, "checked='checked'")} >团员</option> 
-									<option value="2" ${check(student.feature!, 2, "checked='checked'")} >群众</option> 
+									<option value="1" ${ student.feature! == 1 ? "selected=selected" : "" } >团员</option>
+									<option value="2" ${ student.feature! == 2 ? "selected=selected" : "" } >群众</option> 
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>
@@ -187,7 +186,9 @@
 		
 		var value = $('select[name="student.sid"]').val();
 		$.getJSON("${CONTEXT_PATH}/admin/student/getClassBySchool/" + value, function (data) {
-	        
+			
+			$('select[name="student.cid"]').html("");
+			$('select[name="student.cid"]').append($("<option/>").text("请选择班级").attr("value", -1));
 			//对请求返回的JSON格式进行分解加载
 	        $.each(data.json, function(idx, item) {
 	            $('select[name="student.cid"]').append($("<option/>").text(item).attr("value", idx));
@@ -206,90 +207,6 @@
 			
 		});
 	});
-		
-		
-		
-		
-		
-// 		$.ajax({
-			
-// 			url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
-			
-// 			data: {
-				
-// 				'schoolId' : $('#studentSchool').val(),
-// 			},
-// 			success: function(data) {
-				
-// 				if(data.status == "success") {
-// 	    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
-// 		    		$.each(data.classList, function (index,trem) { 
-// 		    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
-// 		    		}); 
-// 		    		selectStr+="</select>";
-// 	    			var $select = $(selectStr);
-	    	        
-// 		    		$("#insertClass").empty();
-// 		    		$("#insertClass").append($select);
-// 				} else if(data.status == "failed") {
-	// 				var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
-	// 	    		$("#insertClass").empty();
-	// 	    		$("#insertClass").append($select);
-	// 				art.dialog({
-	// 					title: "获取班级失败",
-	// 					icon: "error",
-	// 				    content : "获取班级信息失败！<br/><br/>",
-	// 					cancelVal: '返回',
-	// 					cancel: true ,
-	// 				});
-					
-// 				}
-				
-// 			}
-// 		});
-		
-// 		$('#studentSchool').change(function() {
-			
-// 			$.ajax({
-				
-// 				url: "${CONTEXT_PATH}/admin/student/getClassBySchool",
-	    		
-// 	    		data: {
-	    			
-// 	    			'schoolId' : $('#studentSchool').val(),
-// 	    		},
-// 				success: function(data) {
-					
-// 					if(data.status == "success") {
-// 		    			var selectStr = "<select class='form-control input-sm' name='student.cid' >";
-// 	    	    		$.each(data.classList, function (index,trem) { 
-// 	    	    			selectStr+="<option value='"+trem.ID+"' >"+trem.NAME+"</option>";
-// 	    	    		}); 
-// 	    	    		selectStr+="</select>";
-// 	        			var $select = $(selectStr);
-		    	        
-// 			    		$("#insertClass").empty();
-// 			    		$("#insertClass").append($select);
-// 					} else if(data.status == "failed") {
-// 						var $select = $("<select class='form-control input-sm' name='student.cid' disabled = 'disabled'><option value='${class.id!}' ></option></select>");
-// 			    		$("#insertClass").empty();
-// 			    		$("#insertClass").append($select);
-// 						art.dialog({
-// 							title: "获取班级失败",
-// 							icon: "error",
-// 						    content : "获取班级信息失败！<br/><br/>",
-// 							cancelVal: '返回',
-// 							cancel: true ,
-// 						});
-						
-// 					}
-					
-// 	    		}
-// 	    	});
-			
-// 		});
-		
-// 	});
 
 </script>
 

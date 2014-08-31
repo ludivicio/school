@@ -36,8 +36,8 @@
 		      		<div class="input-group-addon">性别</div>
 		      		<select class="form-control" name="sex">
 		      			<option value="-1">--请选择--</option>
-						<option value="0" ${check(searchSex!, 0, "checked='checked'")} >女</option>
-						<option value="1" ${check(searchSex!, 1, "checked='checked'")} >男</option> 
+						<option value="0" ${ searchSex! == 0 ? "selected=selected" : "" } >男</option>
+						<option value="1" ${ searchSex! == 1 ? "selected=selected" : "" } >女</option> 
 					</select>
 		    	</div>
 		  	</div>
@@ -85,16 +85,16 @@
 							<td align="center">${student.uuid!}</td>
 							<td>${student.name!}</td> 
 							<td align="center">${student.identity!}</td> 
-							<td>${@student.getSchoolName()}</td> 
-							<td>${student.sex! == 0 ? "女" : "男"}</td>
-							<td>${@student.getClassName()}</td> 
+							<td>${student.school.name!}</td> 
+							<td>${student.sex! == 0 ? "男" : "女"}</td>
+							<td>${student.clazz.name!}</td> 
 							<td>${student.birthplace!}</td> 
 							<td>
-								${student.feature! == 0 ? "党员" : student.feature! == 1 ? "团员" : "群众"}
+								${student.feature! == 0 ? "团员" : "群众"}
 							</td> 
 							<td>${student.national!}</td>
 							<td>${student.phone!}</td>
-							<td>${teacher.status! == 0 ? "在校" : teacher.education! == 1 ? "退学" : teacher.education! == 1 ? "休学" : "请假"}</td>
+							<td>${student.status! == 0 ? "在校" : student.status! == 1 ? "退学" : "休学" }</td>
 							<td align="center">
 								<a href="/admin/student/edit/${student.id!}">编辑</a>
 								&nbsp;&nbsp;

@@ -150,7 +150,13 @@ public class SchoolController extends Controller {
 			school.set("sort",1);
 		}
 		if (null == school.getInt("id")) {
-			school.set("uuid", UUID.randomUUID());
+
+			int count = School.dao.getCount();
+			
+			// 所有的学校uuid以10为基数累加
+			// 第一所学校的uuid为 10 + 1 = 11
+			// 第二所学校的uuid为 10 + 2 = 12;
+			school.set("uuid", (11 + count));
 			school.save();
 		} else {
 			school.update();

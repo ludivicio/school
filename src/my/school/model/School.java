@@ -2,6 +2,7 @@ package my.school.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -21,6 +22,15 @@ public class School extends Model<School> {
 	 */
 	public List<School> getSchools() {
 		return School.dao.find("select * from school order by id desc");
+	}
+
+	/**
+	 * 获取学校的数量
+	 * 
+	 * @return
+	 */
+	public int getCount() {
+		return Db.queryInt("select count(*) from school");
 	}
 
 	/**

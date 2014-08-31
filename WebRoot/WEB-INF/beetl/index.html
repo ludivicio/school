@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>查询系统</title>
+
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery.js"></script>
+	<!-- Bootstrap -->
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+<script type="text/javascript">
+	
+function changeTorS(obj){
+	
+}
+$(document).ready(function() {
+	$('#selType').change(function(){
+		var selType = $('#selType').val();
+		if(selType == '0'){
+			$('#sForm').attr("action", "${CONTEXT_PATH}/student/search");
+			$('#uuidDiv').text("学号");
+			$('#uuid').attr("placeholder","学生学号");
+			$('showTitle').text("学生信息");
+			 $('#studentDiv').css("display", "");
+			
+			 $('#teacherDiv').css("display","none");
+			
+		}else{
+			$('#sForm').attr("action", "${CONTEXT_PATH}/teacher/search");
+			$('#uuidDiv').text("编号");
+			$('#uuid').attr("placeholder","教师编号");
+			$('#showTitle').text("教师信息");
+			 $("#studentDiv").css("display", "none");
+			 $('#teacherDiv').css("display","");
+		}
+	});
+	
+});
+
+</script>
+</head>
+<body>
+<div class="span7 text-center">
+<div class="row">
+	<div class="col-md-12">
+		<form class="form-inline" action="/student/search" method="post" role="form" style="" id="sForm">
+
+				<div class="form-group">
+			     		<select class="form-control" name="selType" id="selType">
+						<option value="0" ${check(searchType!, 0, "checked='checked'")} >学生</option>
+						<option value="1" ${check(searchType!, 1, "checked='checked'")} >教师</option> 
+					</select>
+				</div>
+			  	
+			  	<div class="form-group">
+			    	<div class="input-group">
+			      		<div class="input-group-addon" id = "uuidDiv">学号</div>
+			      		<input class="form-control" type="text" name="uuid" id="uuid" value="${searchUuid!}" placeholder="学号">
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group">
+			    	<div class="input-group">
+			      		<div class="input-group-addon">姓名</div>
+			      		<input class="form-control" type="text" name="name" id="name" value="${searchName!}" placeholder="姓名">
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group">
+			    	<div class="input-group">
+			      		<div class="input-group-addon">身份证号</div>
+			      		<input class="form-control" type="text" name="identity" id="identity" value="${searchIdnetity!}" placeholder="身份证号">
+			    	</div>
+			  	</div>
+			  	
+			  	<input type="submit" class="btn btn-info" name="subButton" id="subButton" value="查询" />	
+			</form>
+			<hr>
+	
+	</div>
+</div>
+<!--详细信息  -->
+<div id = "studentDiv">
+<ul class="nav nav-tabs" role="tablist" id="myTab">
+  <li class="active"><a href="#student" role="tab" data-toggle="tab">学生信息</a></li>
+  <li><a href="#count" role="tab" data-toggle="tab">学生成绩</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="student">
+						  <div class="row">
+							<div class="col-md-12">
+								<div class="widget">
+									<div class="widget-content">
+										<div class="padd">
+						
+											<form class="form-horizontal" role="form">
+						
+												<div class="form-group">
+												
+													<label class="control-label col-lg-1" for="student.name">姓 名</label>
+													<div class="col-lg-3">${student.name!}</div>
+														<p class="help-block col-lg-2"></p>
+													
+													<label class="control-label col-lg-1" for="student.identity">身份证</label>
+													<div class="col-lg-3">${student.identity!}</div>
+														<p class="help-block col-lg-2"></p>
+						
+												</div>
+						
+												<div class="form-group">
+												
+												 	<label class="control-label col-lg-1" for="student.sid">学校名称</label>
+													<div class="col-lg-3">${student.school.name!}</div>
+													<p class="help-block col-lg-2"></p>
+												
+												 	<label class="control-label col-lg-1" for="student.cid">班 级</label>
+													<div class="col-lg-3" id="insertClass">${student.classe.name!}</div>
+													<p class="help-block col-lg-2"></p>
+												</div>
+												
+												<div class="form-group">
+												
+													<label class="control-label col-lg-1" for="student.sex">性 别</label>
+													<div class="col-lg-3"></div>
+													<p class="help-block col-lg-2">${student.sex! == 0 ? "女" : "男"}</p>
+													
+													<label class="control-label col-lg-1" for="student.status">学生状态</label>
+													<div class="col-lg-3">${student.status! == 0 ? "在校" : student.status! == 1 ? "退学" : student.status! == 1 ? "休学" : "请假"}</div>
+													<p class="help-block col-lg-2"></p>
+													
+												</div>						
+												
+												<div class="form-group">
+													
+													<label class="control-label col-lg-1" for="student.birthplace">籍 贯</label>
+													<div class="col-lg-5 ">${student.birthplace!}</div>
+													
+													<label class="control-label col-lg-1" for="student.birth">出生日期</label>
+													<div class="col-lg-3">${student.birth!}</div>
+												</div>
+						
+						
+												<div class="form-group">
+												
+												 	<label class="control-label col-lg-1" for="student.national">民 族</label>
+													<div class="col-lg-3">${student.national!}</div>
+													<p class="help-block col-lg-2"></p>
+													
+													<label class="control-label col-lg-1" for="student.feature">政治面貌</label>
+													<div class="col-lg-3">${student.feature! == 0 ? "党员" : student.feature! == 1 ? "团员" : "群众"}</div>
+													<p class="help-block col-lg-2"></p>
+													
+												</div>
+												
+												<div class="form-group">
+													<label class="control-label col-lg-1" for="student.desc">学生简介</label>
+													<div class="col-lg-9 ">${student.desc!}</div>
+													<p class="help-block col-lg-2"></p>
+												</div>
+						
+											</form>
+										</div>
+									</div>
+									
+									<div class="widget-foot">
+						
+									</div>
+									
+								</div>
+							</div>
+						</div> 
+  </div>
+  <div class="tab-pane" id="count">
+  				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th align="center">学期</th>
+							<th>学号</th>
+							<th>课程名称</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<# for(score in scoreList!){ #>
+						
+						<tr>
+							<td>${score.term.name!}</td>
+							<td>${score.student.uuid!}</td> 
+							<td>${score.course.name!}</td> 
+						
+						<# } #>
+						
+					</tbody>
+				</table>
+  </div>
+</div>
+
+
+</div >
+<script>
+  $(function () {
+    $('#myTab a:first').tab('show')
+  })
+</script>
+<div id = "teacherDiv" style="display:none;">
+	  <div class="row">
+		<div class="col-md-12">
+			<div class="widget">
+				<div class="widget-content">
+					<div class="padd">
+	
+						<form class="form-horizontal" role="form">
+	
+							<div class="form-group">
+							
+								<label class="control-label col-lg-1" for="teacher.name">姓 名</label>
+								<div class="col-lg-3">${teacher.name!}</div>
+									<p class="help-block col-lg-2"></p>
+								
+								<label class="control-label col-lg-1" for="teacher.identity">身份证</label>
+								<div class="col-lg-3">${teacher.identity!}</div>
+									<p class="help-block col-lg-2"></p>
+	
+							</div>
+	
+							<div class="form-group">
+															
+							 	<label class="control-label col-lg-1" for="teacher.sid">教师编号</label>
+								<div class="col-lg-3">${teacher.uuid!}</div>
+								<p class="help-block col-lg-2"></p>
+							
+							 	<label class="control-label col-lg-1" for="teacher.sid">学校名称</label>
+								<div class="col-lg-3">${teacher.school.name!}</div>
+								<p class="help-block col-lg-2"></p>
+
+
+							</div>
+							
+							<div class="form-group">
+							
+								<label class="control-label col-lg-1" for="teacher.sex">性 别</label>
+								<div class="col-lg-3"></div>
+								<p class="help-block col-lg-2">${teacher.sex! == 0 ? "女" : "男"}</p>
+								
+							 	<label class="control-label col-lg-1" for="teacher.cid">状态</label>
+								<div class="col-lg-3" id="insertClass">${teacher.status! == 0 ? "在职" : teacher.status! == 1 ? "病退" : teacher.status! == 1 ? "退休" : "休假"}</div>
+								<p class="help-block col-lg-2"></p>
+								
+							</div>						
+							
+							<div class="form-group">
+								
+								<label class="control-label col-lg-1" for="teacher.birthplace">籍 贯</label>
+								<div class="col-lg-5 ">${teacher.birthplace!}</div>
+								
+								<label class="control-label col-lg-1" for="teacher.birth">出生日期</label>
+								<div class="col-lg-3">${teacher.birth!}</div>
+							</div>
+	
+	
+							<div class="form-group">
+							
+							 	<label class="control-label col-lg-1" for="teacher.national">民 族</label>
+								<div class="col-lg-3">${teacher.national!}</div>
+								<p class="help-block col-lg-2"></p>
+								
+								<label class="control-label col-lg-1" for="teacher.feature">政治面貌</label>
+								<div class="col-lg-3">${teacher.feature! == 0 ? "党员" : teacher.feature! == 1 ? "团员" : "群众"}</div>
+								<p class="help-block col-lg-2"></p>
+								
+							</div>
+							<div class="form-group">
+							
+							 	<label class="control-label col-lg-1" for="teacher.national">教龄</label>
+								<div class="col-lg-3">${teacher.seniority!}</div>
+								<p class="help-block col-lg-2"></p>
+								
+								<label class="control-label col-lg-1" for="teacher.feature">学历</label>
+								<div class="col-lg-3">${teacher.education! == 0 ? "学士" : teacher.education! == 1 ? "硕士" : "博士"}</div>
+								<p class="help-block col-lg-2"></p>
+								
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label col-lg-1" for="teacher.desc">教师简介</label>
+								<div class="col-lg-9 ">${teacher.desc!}</div>
+								<p class="help-block col-lg-2"></p>
+							</div>
+	
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+</div>
+</div>
+</body>
+</html>

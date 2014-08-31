@@ -22,7 +22,7 @@
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="class.year">
 								<# for(year in yearList!){ #>
-									<option value="${year}" ${year == class.year! ? "checked='checked'" : ""}>${year}年</option>
+									<option value="${year}" ${ year == class.year! ? "selected=selected" : "" }>${year}年</option>
 								<# } #>
 								</select>
 							</div>
@@ -94,6 +94,8 @@
 		var value = $('select[name="class.sid"]').val();
 		$.getJSON("${CONTEXT_PATH}/admin/class/getTeachers/?r=4&s=" + value, function (data) {
 	        
+			$('select[name="class.tid"]').html("");
+			$('select[name="class.tid"]').append($("<option/>").text("请选择教师").attr("value", -1));
 			//对请求返回的JSON格式进行分解加载
 	        $.each(data.json, function(idx, item) {
 	            $('select[name="class.tid"]').append($("<option/>").text(item).attr("value", idx));
@@ -105,7 +107,7 @@
 
 	$(document).ready(function() {
 		
-		getTeacher();
+		// getTeacher();
 		
 		$('select[name="class.sid"]').change(function(){  
 

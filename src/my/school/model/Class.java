@@ -54,7 +54,7 @@ public class Class extends Model<Class> {
 	}
 
 	public Page<Class> paginate(int pageNumber, int pageSize) {
-		return paginate(pageNumber, pageSize, "select *", "from class order by sort desc");
+		return paginate(pageNumber, pageSize, "select *", "from class order by sid, sort, id desc");
 	}
 
 	public Teacher getTeacher() {

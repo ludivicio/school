@@ -4,6 +4,8 @@
 <div class="row">
 	<div class="col-lg-12">
 	
+		<# if(admin.rid ==1) { #>
+	
 		<form class="form-inline" action="${CONTEXT_PATH}/admin/score/search" method="post" role="form">
 		  	
 		  	<div class="form-group">
@@ -12,7 +14,7 @@
 		      		<select class="form-control" name="tid">
 						<option value="-1">请选择学期</option>
 						<# for(term in termList!){ #>
-							<option value="${term.id}" ${ term.id == curTid! ? "selected=selected" : "" }>${term.name}</option>
+							<option value="${term.id}" ${ term.id == curTerm.id! ? "selected=selected" : "" }>${term.name}</option>
 						<# } #>
 					</select>
 		    	</div>
@@ -24,7 +26,7 @@
 		      		<select class="form-control" name="sid">
 						<option value="-1">请选择学校</option>
 						<# for(school in schoolList!){ #>
-							<option value="${school.id}" ${ school.id == curSid! ? "selected=selected" : "" }>${school.name}</option>
+							<option value="${school.id}" ${ school.id == curSchool.id! ? "selected=selected" : "" }>${school.name}</option>
 						<# } #>
 					</select>
 		    	</div>
@@ -36,7 +38,7 @@
 		      		<select class="form-control" name="cid">
 						<option value="-1">请选择班级</option>
 						<# for(class in classList!){ #>
-							<option value="${class.id!}" ${ class.id! == curCid! ? "selected=selected" : "" }>${class.name!}</option>
+							<option value="${class.id!}" ${ class.id! == curClass.id! ? "selected=selected" : "" }>${class.name!}</option>
 						<# } #>
 					</select>
 		    	</div>
@@ -45,10 +47,19 @@
 		  	<input type="submit" class="btn btn-info" value="确定" />	
 		</form>
 		
+		<# } else { #>
+		
+		<div class="row">
+			<p class="col-lg-4">${curTerm.name!}</p>
+			<p class="col-lg-4">${curSchool.name!}</p>
+			<p class="col-lg-4">${curClass.name!}</p>
+		</div>
+			
+		<# } #>
 	</div>
 </div>
 	
-<# if (curTid! != null && curSid! != null && curCid! != null && grade! != null) { #>	
+<# if (curTerm! != null && curSchool! != null && curClass! != null && grade! != null) { #>	
 
 <div class="row">
 	<div class="col-lg-12">
@@ -80,15 +91,12 @@
 					<tbody>
 
 					<# for(student in studentList.list!){ #>
-						<tr>
+						<tr id="t_${student.id}">
 							<td>${student.uuid}</td>
 							<td>${student.name}</td>
 						<# for(course in courseList!) { #>
 							<td>
-
-								<div class="form-group">
-									<input type="text" class="form-control input-sm" name="s_${student.id}_${course.id}" value="${course.name!}" />
-								</div>
+								<input type="text" class="form-control input-sm" name="s_${student.id}_${course.id}" value="${@student.getScore(curTerm.id, course.id)}" />
 							</td>
 						<# } #>
 							<td align="center">
@@ -128,6 +136,8 @@
 		var value = $('select[name="sid"]').val();
 		$.getJSON("${CONTEXT_PATH}/admin/score/getClassBySchool/" + value, function (data) {
 	        
+			$('select[name="cid"]').html("");
+			$('select[name="cid"]').append($("<option/>").text("请选择班级").attr("value", -1));
 			//对请求返回的JSON格式进行分解加载
 	        $.each(data.json, function(idx, item) {
 	            $('select[name="cid"]').append($("<option/>").text(item).attr("value", idx));
@@ -139,58 +149,55 @@
 	
 	$(document).ready(function() {
 		
-		
 		$('select[name="sid"]').change(function(){  
-	
 			getClass();
 			
 		});
 	});
 	
-	
-	
 	function save(id) {
 		
-// 		var value = "";
-// 		$('input[name="course' + id + '"]:checked').each(function() {
-// 			value += $(this).val() + ",";
-			
-// 		});
+		var value = "tid=" + $('select[name="tid"]').val();
 		
-// 		$.ajax({
-//     		url: "${CONTEXT_PATH}/admin/assign/save",
-//     		data: {
-//     			gid: $('input[name="gid' + id + '"]').val(),
-//     			course: value,
-//     		},
-// 			success: function(data) {
+// 		value += "&sid=" + $('select[name="sid"]').val();
+		    
+		$("#t_" + id).find("input").each(function() {
+			value += "&" + $(this).attr("name") + "=" + $(this).val();
+		});
+		
+// 		value += "&cid=" + $('select[name="cid"]').val();
+		value += "&sid=" + id;
+		
+		$.ajax({
+    		url: "${CONTEXT_PATH}/admin/score/save",
+    		data: value,
+			success: function(data) {
 				
-// 				if(data.status == "success") {
+				if(data.status == "success") {
 					
-// 					art.dialog({
-// 						title: "操作成功",
-// 						icon: "succeed",
-// 					    content : "课程安排成功！<br/><br/>",
-// 						ok: function() {
-// 							location.reload();
-// 						},
-// 					});
-// 				} else {
-					
-// 					art.dialog({
-// 						title: "操作失败",
-// 						icon: "error",
-// 					    content : "课程安排失败！<br/><br/>",
-// 						ok: true,
-// 					});
-// 				}
+					art.dialog({
+						title: "录入成功",
+						icon: "succeed",
+					    content : "成绩录入成功！<br/><br/>",
+						ok: function() {
+							location.reload();
+						},
+					});
+				} else if(data.status == "error"){
+
+					art.dialog({
+						title: "录入失败",
+						icon: "error",
+					    content : data.errorMsg + "<br/><br/>",
+						ok: true,
+					});
+				}
 				
-//     		}
-//     	});
+    		}
+    	});
 		
 	}
 	
-
 </script>
 
 <# } #>

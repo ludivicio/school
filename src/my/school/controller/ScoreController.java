@@ -1,6 +1,7 @@
 package my.school.controller;
 
 import java.text.ParseException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,14 @@ import my.school.config.Constants;
 import my.school.interceptor.ScoreInterceptor;
 import my.school.kit.DateKit;
 import my.school.kit.ParaKit;
+import my.school.model.Admin;
 import my.school.model.Class;
 import my.school.model.Course;
 import my.school.model.Grade;
+import my.school.model.School;
+import my.school.model.Score;
 import my.school.model.Student;
+import my.school.model.Teacher;
 import my.school.model.Term;
 
 import com.jfinal.aop.Before;
@@ -35,7 +40,7 @@ public class ScoreController extends Controller {
 
 	public void add() {
 
-		render("add.html");
+		redirect("search.html");
 	}
 
 	/**
@@ -49,21 +54,49 @@ public class ScoreController extends Controller {
 			page = 1;
 		}
 
-		int tid = ParaKit.paramToInt(getPara("tid"), -1);
-		int sid = ParaKit.paramToInt(getPara("sid"), -1);
-		int cid = ParaKit.paramToInt(getPara("cid"), -1);
+		School curSchool = null;
+		Term curTerm = null;
+		Class curClass = null;
+		
+		Admin admin = getSessionAttr("admin");
+		setAttr("admin", admin);
+		
+		if(admin.getInt("rid") == 3) {
+			int teacherId = admin.getInt("tid");
+			
+			Teacher teacher = Teacher.dao.findById(teacherId);
+			curSchool = teacher.getSchool();
+			curClass = teacher.getClazz();
+			curTerm = Term.dao.getLastTerm();
+			
+		}else if(admin.getInt("rid") == 1 ) {
+			int tid = ParaKit.paramToInt(getPara("tid"), -1);
+			int sid = ParaKit.paramToInt(getPara("sid"), -1);
+			int cid = ParaKit.paramToInt(getPara("cid"), -1);
+			
+			
+			// 查询该学校的所有班级
+			List<Class> classList = Class.dao.getClassesBySchoolId(sid);
+			setAttr("classList", classList);
 
-		// 查询该学校的所有班级
-		List<Class> classList = Class.dao.getClassesBySchoolId(sid);
-		setAttr("classList", classList);
-
+			curTerm = Term.dao.findById(tid);
+			curSchool = School.dao.findById(sid);
+			curClass = Class.dao.findById(cid);
+		}
+		
+		if (curClass == null) {
+			render("add.html");
+			return;
+		}
+		
 		// 查询该班级下的所有学生信息
-		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE, cid);
+		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE, curClass.getInt("id"));
 		setAttr("studentList", studentList);
 
 		// 获取该学期下该班级的所有课程信息
-		Term term = Term.dao.findById(tid);
-		String end = term.getStr("end");
+		
+		
+		String end = curTerm.getStr("end");
 
 		System.out.println("end: " + end);
 
@@ -76,14 +109,12 @@ public class ScoreController extends Controller {
 
 			System.out.println("year: " + year + "  month: " + month);
 
-			Class clazz = Class.dao.findById(cid);
-			String startYear = clazz.getStr("year");
+			String startYear = curClass.getStr("year");
 			gid = year - Integer.parseInt(startYear);
 
 			System.out.println("grade: " + gid);
 
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -101,10 +132,10 @@ public class ScoreController extends Controller {
 
 		Grade grade = Grade.dao.findById(gid);
 		setAttr("grade", grade);
-		
-		setAttr("curTid", tid);
-		setAttr("curSid", sid);
-		setAttr("curCid", cid);
+
+		setAttr("curTerm", curTerm);
+		setAttr("curSchool", curSchool);
+		setAttr("curClass", curClass);
 
 		render("add.html");
 
@@ -135,11 +166,61 @@ public class ScoreController extends Controller {
 	}
 
 	/**
-	 * 添加/修改科室信息处理方法
+	 * 录入学生成绩
 	 */
 	public void save() {
 
-		redirect("index.html");
+		int sid = ParaKit.paramToInt(getPara("sid"), -1);
+		int tid = ParaKit.paramToInt(getPara("tid"), -1);
+
+		Enumeration<String> params = getParaNames();
+		String paramName = null;
+		String scoreId = null;
+		while (params.hasMoreElements()) {
+			paramName = params.nextElement();
+			if (paramName.startsWith("s_" + sid + "_")) {
+				scoreId = paramName.substring(paramName.lastIndexOf("_") + 1);
+
+				String scoreStr = getPara(paramName);
+
+				if (ParaKit.isEmpty(scoreStr)) {
+
+					setAttr("status", "error");
+					setAttr("errorMsg", "分数不能为空！");
+					renderJson();
+					return;
+				}
+
+				int s = -1;
+				try {
+					s = Integer.parseInt(scoreStr);
+					if (s < 0 || s > 100) {
+						setAttr("status", "error");
+						setAttr("errorMsg", "分数填写错误！");
+						renderJson();
+						return;
+					}
+				} catch (NumberFormatException e) {
+					setAttr("status", "error");
+					setAttr("errorMsg", "分数填写错误！");
+					renderJson();
+					return;
+				}
+
+				Score score = new Score();
+				score.set("tid", tid);
+				score.set("sid", sid);
+				score.set("cid", scoreId);
+				score.set("score", s);
+				score.save();
+
+				System.out.println("score: " + score);
+
+			}
+		}
+
+		setAttr("status", "success");
+		renderJson();
 	}
 
 	/**

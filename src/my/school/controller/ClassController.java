@@ -7,8 +7,11 @@ import java.util.Map;
 
 import my.school.config.Constants;
 import my.school.interceptor.ClassInterceptor;
+import my.school.kit.Cn2Spell;
 import my.school.kit.ParaKit;
+import my.school.model.Admin;
 import my.school.model.Class;
+import my.school.model.School;
 import my.school.model.Teacher;
 import my.school.validator.SaveClassValidator;
 
@@ -142,12 +145,26 @@ public class ClassController extends Controller {
 
 		Class clazz = getModel(Class.class);
 
+		if (clazz.getInt("sid") < 0 || clazz.getInt("tid") < 0) {
+			setAttr("status", "failed");
+			renderJson();
+			return;
+		}
+
 		String year = clazz.getStr("year");
 		String sid = String.valueOf(clazz.getInt("sid"));
 
+		if("-1".equals(sid)) {
+			setAttr("status", "failed");
+			renderJson();
+			return;
+		}
+		
 		System.out.println("year: " + year);
 
 		System.out.println("id: " + clazz.getInt("id"));
+
+		School school = School.dao.findById(sid);
 		
 		if (clazz.getInt("id") == null) {
 
@@ -161,11 +178,13 @@ public class ClassController extends Controller {
 			String uuid = null;
 			String name = null;
 
+			// uuid 的格式为： 学校uuid + 年份的后两位 作为前缀，后面累加
+			
 			if (count < 10) {
-				uuid = year + "000" + count;
+				uuid = school.getStr("uuid") + year.substring(2) + "0" + count;
 				name = year + "级0" + count + "班";
 			} else {
-				uuid = year + "00" + count;
+				uuid = school.getStr("uuid") + year.substring(2) + count;
 				name = year + "级" + count + "班";
 			}
 
@@ -181,8 +200,22 @@ public class ClassController extends Controller {
 
 				// 读取教师信息，将其改为班主任
 				Teacher teacher = Teacher.dao.findById(clazz.get("tid"));
-				teacher.set("rid", 3);
-				teacher.update();
+				if (teacher != null) {
+					teacher.set("rid", 3);
+					teacher.update();
+				} else {
+					setAttr("status", "failed");
+					renderJson();
+					return;
+				}
+
+				// 在管理员表中创建账号
+				Admin admin = new Admin();
+				admin.set("account", teacher.getStr("uuid"));
+				admin.set("password", Cn2Spell.getInstance().getSpelling(teacher.getStr("name")));
+				admin.set("time", null);
+				admin.set("tid", teacher.getInt("id"));
+				admin.save();
 
 				setAttr("status", "success");
 				setAttr("action", "create");
@@ -198,7 +231,7 @@ public class ClassController extends Controller {
 			boolean result = clazz.update();
 			if (result) {
 
-				Teacher oldTeacher = Teacher.dao.getTeachersByClassId(clazz.getInt("id"));
+				Teacher oldTeacher = Teacher.dao.getTeacherByClassId(clazz.getInt("id"));
 				Teacher newTeacher = Teacher.dao.findById(clazz.getInt("tid"));
 
 				if (oldTeacher.getInt("id") != newTeacher.getInt("id")) {
@@ -207,10 +240,31 @@ public class ClassController extends Controller {
 
 					newTeacher.set("rid", 3);
 					newTeacher.update();
+
+					Admin admin = Admin.dao.getAdminByTeacherId(oldTeacher.getInt("id"));
+					if (admin != null) {
+						admin.set("account", newTeacher.getStr("uuid"));
+						admin.set("password",
+								Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
+						admin.set("time", null);
+						admin.set("tid", newTeacher.getInt("id"));
+						admin.update();
+					} else {
+						// 在管理员表中创建账号
+						admin = new Admin();
+						admin.set("account", newTeacher.getStr("uuid"));
+						admin.set("password",
+								Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
+						admin.set("rid", 3);
+						admin.set("time", null);
+						admin.set("tid", newTeacher.getInt("id"));
+						admin.save();
+					}
+
 				}
 
 				setAttr("status", "success");
-				setAttr("status", "update");
+				setAttr("action", "update");
 
 			} else {
 				setAttr("status", "failed");
@@ -226,7 +280,21 @@ public class ClassController extends Controller {
 	 */
 	public void edit() {
 		int classId = getParaToInt(0);
-		setAttr("class", Class.dao.findById(classId));
+
+		Class clazz = Class.dao.findById(classId);
+
+		// 读取所有任课老师的信息
+		List<Teacher> teacherList = Teacher.dao.getNormalTeachers(clazz.getInt("sid"));
+		Teacher teacher = Teacher.dao.findById(clazz.get("tid"));
+		teacherList.add(teacher);
+		System.out.println("teacher: " + teacher.getStr("name"));
+		for(Teacher t : teacherList) {
+			System.out.println("t: " + t.getStr("name"));
+		}
+		
+		setAttr("teacherList", teacherList);
+
+		setAttr("class", clazz);
 		render("add.html");
 	}
 

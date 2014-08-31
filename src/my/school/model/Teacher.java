@@ -32,7 +32,8 @@ public class Teacher extends Model<Teacher> {
 	 * @return
 	 */
 	public List<Teacher> getHeadTeachers(int sid) {
-		return Teacher.dao.find("select * from teacher where rid = 3 and sid = ?", sid);
+		return Teacher.dao.find("select * from teacher where rid = 3 and status = 0 and sid = ?",
+				sid);
 	}
 
 	/**
@@ -41,7 +42,8 @@ public class Teacher extends Model<Teacher> {
 	 * @return
 	 */
 	public List<Teacher> getNormalTeachers(int sid) {
-		return Teacher.dao.find("select * from teacher where rid = 4 and sid = ?", sid);
+		return Teacher.dao.find("select * from teacher where rid = 4 and status = 0 and sid = ?",
+				sid);
 	}
 
 	/**
@@ -50,9 +52,20 @@ public class Teacher extends Model<Teacher> {
 	 * @param cid
 	 * @return
 	 */
-	public Teacher getTeachersByClassId(int cid) {
+	public Teacher getTeacherByClassId(int cid) {
 		Class clazz = Class.dao.findById(cid);
 		return clazz.getTeacher();
+	}
+
+	/**
+	 * 获取班级信息
+	 * 
+	 * @return
+	 */
+	public Class getClazz() {
+
+		return Class.dao.findFirst("select * from class where tid = ?", get("id"));
+
 	}
 
 	/**

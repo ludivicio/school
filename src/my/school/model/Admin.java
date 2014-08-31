@@ -22,6 +22,17 @@ public class Admin extends Model<Admin> {
 	}
 
 	/**
+	 * 根据tid获取管理员信息
+	 * @param tid
+	 * @return
+	 */
+	public Admin getAdminByTeacherId(int tid) {
+		
+		return Admin.dao.findFirst("select * from admin where rid = 3 and tid = ?", tid);
+	}
+	
+	
+	/**
 	 * 获取角色信息
 	 * 
 	 * @return

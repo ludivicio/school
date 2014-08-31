@@ -105,9 +105,9 @@
 							<label class="control-label col-lg-1" for="teacher.education">学 历</label>
 							<div class="col-lg-3">
 								<select class="form-control input-sm" name="teacher.education">
-									<option value="1" ${check(teacher.education!, 1, "selected=selected")} >学士</option> 
-									<option value="2" ${check(teacher.education!, 2, "selected=selected")} >硕士</option> 
-									<option value="3" ${check(teacher.education!, 3, "selected=selected")} >博士</option> 
+									<option value="1" ${check(teacher.education!, 0, "selected=selected")} >学士</option> 
+									<option value="2" ${check(teacher.education!, 1, "selected=selected")} >硕士</option> 
+									<option value="3" ${check(teacher.education!, 2, "selected=selected")} >博士</option> 
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>
@@ -140,10 +140,9 @@
 							<label class="control-label col-lg-1" for="teacher.status">教师状态</label>
 							<div class="col-lg-3 ${ exist( statusMsg!, 'has-error') }">
 								<select class="form-control input-sm" name="teacher.status">
-									<option value="1" ${check(teacher.status!, 1, "selected=selected")} >在职</option> 
-									<option value="2" ${check(teacher.status!, 2, "selected=selected")} >病退</option> 
-									<option value="3" ${check(teacher.status!, 3, "selected=selected")} >退休</option> 
-									<option value="4" ${check(teacher.status!, 4, "selected=selected")} >休假</option> 
+									<option value="0" ${check(teacher.status!, 0, "selected=selected")} >在职</option> 
+									<option value="1" ${check(teacher.status!, 1, "selected=selected")} >退休</option> 
+									<option value="2" ${check(teacher.status!, 2, "selected=selected")} >休假</option> 
 								</select>
 							</div>
 							<p class="help-block col-lg-2">（必填项）</p>

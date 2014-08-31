@@ -9,7 +9,6 @@ import my.school.config.Constants;
 import my.school.interceptor.StudentInterceptor;
 import my.school.kit.DateKit;
 import my.school.kit.ParaKit;
-import my.school.kit.UUID;
 import my.school.kit.UploadKit;
 import my.school.model.Class;
 import my.school.model.Student;
@@ -44,15 +43,15 @@ public class StudentController extends Controller {
 		if (page < 1) {
 			page = 1;
 		}
-		
+
 		// 读取所有的学生信息
 		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE);
 		setAttr("studentList", studentList);
-		
+
 		setAttr("searchUuid", "");
 		setAttr("searchName", "");
 		setAttr("searchSex", -1);
-		
+
 		setAttr("searchPage", Constants.NOT_SEARCH_PAGE);
 		render("index.html");
 	}
@@ -157,7 +156,7 @@ public class StudentController extends Controller {
 	}
 
 	/**
-	 * 添加/修改科室信息处理方法
+	 * 添加/修改学生信息处理方法
 	 */
 	@Before(SaveStudentValidator.class)
 	public void save() {
@@ -178,10 +177,21 @@ public class StudentController extends Controller {
 		if (student.get("sort") == null || student.get("sort").equals("")) {
 			student.set("sort", 1);
 		}
+
 		if (null == student.getInt("id")) {
 			// 设置注册时间
 			student.set("time", DateKit.getDateTime());
-			student.set("uuid", UUID.randomUUID());
+
+			String uuid = null;
+			Class clazz = Class.dao.findById(student.get("cid"));
+			int count = Student.dao.getCountByClassId(student.getInt("cid"));
+			if (count < 10) {
+				uuid = clazz.getStr("uuid") + "0" + (count + 1);
+			} else {
+				uuid = clazz.getStr("uuid") + (count + 1);
+			}
+
+			student.set("uuid", uuid);
 			student.save();
 		} else {
 			student.update();
