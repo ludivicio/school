@@ -268,8 +268,7 @@ INSERT INTO `permission` (`id`, `name`, `url`, `pid`) VALUES
 (21, '课程列表', '/admin/course/index', 7),
 (22, '添加课程', '/admin/course/add', 7),
 (23, '分配课程', '/admin/assign/index', 8),
-(24, '学生成绩列表', '/admin/score/index', 9),
-(25, '学生成绩录入', '/admin/score/add', 9);
+(24, '学生成绩录入', '/admin/score/index', 9);
 
 -- --------------------------------------------------------
 

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+	<title>学籍信息查询</title>
+	
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="${CONTEXT_PATH}/static/css/style.css" />
+	
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/jquery.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="${CONTEXT_PATH}/static/js/common.js"></script>
+
+</head>
+<body>
+
+	<div class="container">
+	
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="pull-right">
+					<a href="${CONTEXT_PATH}/index.html" class="btn btn-link">学生信息查询</a>
+				</div>
+			</div>		
+		</div>
+		<div class="row">
+
+			<div class="col-lg-12">
+				<div style="margin: auto; text-align: center;">
+					<h3 class="container">佳木斯市中小学学籍查询入口</h3>
+					<br />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div style="margin: auto; text-align: center;">
+					<form class="form-inline"
+						action="${CONTEXT_PATH}/search?type=teacher" method="post"
+						role="form">
+
+						<div class="form-group">
+							<label class="sr-only" for="uuid">工号</label> <input type="text"
+								class="form-control" name="uuid" placeholder="工号" value="${searchUuid!}"/>
+						</div>
+
+						<div class="form-group">
+							<label class="sr-only" for="name">姓名</label> <input type="text"
+								class="form-control" name="name" placeholder="姓名" value="${searchName!}"/>
+						</div>
+
+						<div class="form-group">
+							<label class="sr-only" for="identity">身份证号</label> <input
+								type="text" class="form-control" name="identity"
+								placeholder="身份证号"  value="${searchIdentity!}"/>
+						</div>
+
+						<input type="submit" class="btn btn-info" value="查询" />
+					</form>
+					<br/>
+					<h5>${errorMsg!}</h5>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<# if (teacher! != null ) { #>
+
+	<!--详细信息  -->
+	<div class="row" id="studentDiv">
+
+		<br /> <br /> <br />
+
+		<div class="col-lg-8 col-lg-offset-2">
+			<ul class="nav nav-tabs" role="tablist" id="myTab">
+				<li class="active">
+					<a href="#teacher" role="tab" data-toggle="tab">教师信息</a>
+				</li>
+				
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane active" id="teacher">
+					<br /> <br />
+					<div class="row">
+						<div class="col-lg-12">
+
+							<dl class="dl-horizontal">
+								<dt>工号</dt>
+								<dd>${teacher.uuid!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>姓名</dt>
+								<dd>${teacher.name!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>身份证</dt>
+								<dd>${teacher.identity!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>所在学校</dt>
+								<dd>${teacher.school.name!}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>角色</dt>
+								<dd>${teacher.role.name!}</dd>
+							</dl>
+
+							<# if(teacher.clazz! != null) { #>
+							<dl class="dl-horizontal">
+								<dt>所在班级</dt>
+								<dd>${teacher.clazz.name!}</dd>
+							</dl>
+							<# } #>
+							
+							<dl class="dl-horizontal">
+								<dt>性别</dt>
+								<dd>${teacher.sex! == 1 ? "女" : "男"}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>学历</dt>
+								<dd>${teacher.education! == 0 ? "学士" : teacher.education! == 1 ?
+									"硕士" : "博士"}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>状态</dt>
+								<dd>${teacher.status! == 0 ? "在职" : teacher.status! == 1 ?
+									"退休" : "休假"}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>籍贯</dt>
+								<dd>${teacher.birthplace!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>出生日期</dt>
+								<dd>${teacher.birth!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>民族</dt>
+								<dd>${teacher.national!}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>政治面貌</dt>
+								<dd>${teacher.feature! == 0 ? "党员" : teacher.feature! == 1 ? "团员" : "群众"}</dd>
+							</dl>
+
+							<dl class="dl-horizontal">
+								<dt>地址</dt>
+								<dd>${teacher.address!}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>教龄</dt>
+								<dd>${teacher.seniority!}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>电话</dt>
+								<dd>${teacher.phone!}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>邮箱</dt>
+								<dd>${teacher.email!}</dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>头像</dt>
+								<dd><img src="${CONTEXT_PATH}${teacher.image!}" onload="resizeImage(this, 100, 100)" /></dd>
+							</dl>
+							
+							<dl class="dl-horizontal">
+								<dt>简介</dt>
+								<dd>${teacher.desc!}</dd>
+							</dl>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<# } #>
+
+</body>
+</html>

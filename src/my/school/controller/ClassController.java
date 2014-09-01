@@ -58,7 +58,6 @@ public class ClassController extends Controller {
 		render("index.html");
 	}
 
-	@Before(ClassInterceptor.class)
 	public void add() {
 
 		render("add.html");
@@ -154,18 +153,18 @@ public class ClassController extends Controller {
 		String year = clazz.getStr("year");
 		String sid = String.valueOf(clazz.getInt("sid"));
 
-		if("-1".equals(sid)) {
+		if ("-1".equals(sid)) {
 			setAttr("status", "failed");
 			renderJson();
 			return;
 		}
-		
+
 		System.out.println("year: " + year);
 
 		System.out.println("id: " + clazz.getInt("id"));
 
 		School school = School.dao.findById(sid);
-		
+
 		if (clazz.getInt("id") == null) {
 
 			// 首先找到该学校该年份所有的班级数量
@@ -179,7 +178,7 @@ public class ClassController extends Controller {
 			String name = null;
 
 			// uuid 的格式为： 学校uuid + 年份的后两位 作为前缀，后面累加
-			
+
 			if (count < 10) {
 				uuid = school.getStr("uuid") + year.substring(2) + "0" + count;
 				name = year + "级0" + count + "班";
@@ -234,33 +233,30 @@ public class ClassController extends Controller {
 				Teacher oldTeacher = Teacher.dao.getTeacherByClassId(clazz.getInt("id"));
 				Teacher newTeacher = Teacher.dao.findById(clazz.getInt("tid"));
 
-				if (oldTeacher.getInt("id") != newTeacher.getInt("id")) {
-					oldTeacher.set("rid", 4);
-					oldTeacher.update();
+				oldTeacher.set("rid", 4);
+				oldTeacher.update();
 
-					newTeacher.set("rid", 3);
-					newTeacher.update();
+				newTeacher.set("rid", 3);
+				newTeacher.update();
 
-					Admin admin = Admin.dao.getAdminByTeacherId(oldTeacher.getInt("id"));
-					if (admin != null) {
-						admin.set("account", newTeacher.getStr("uuid"));
-						admin.set("password",
-								Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
-						admin.set("time", null);
-						admin.set("tid", newTeacher.getInt("id"));
-						admin.update();
-					} else {
-						// 在管理员表中创建账号
-						admin = new Admin();
-						admin.set("account", newTeacher.getStr("uuid"));
-						admin.set("password",
-								Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
-						admin.set("rid", 3);
-						admin.set("time", null);
-						admin.set("tid", newTeacher.getInt("id"));
-						admin.save();
-					}
-
+				Admin admin = Admin.dao.getAdminByTeacherId(oldTeacher.getInt("id"));
+				if (admin != null) {
+					admin.set("account", newTeacher.getStr("uuid"));
+					admin.set("password",
+							Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
+					admin.set("time", null);
+					admin.set("tid", newTeacher.getInt("id"));
+					admin.update();
+				} else {
+					// 在管理员表中创建账号
+					admin = new Admin();
+					admin.set("account", newTeacher.getStr("uuid"));
+					admin.set("password",
+							Cn2Spell.getInstance().getSpelling(newTeacher.getStr("name")));
+					admin.set("rid", 3);
+					admin.set("time", null);
+					admin.set("tid", newTeacher.getInt("id"));
+					admin.save();
 				}
 
 				setAttr("status", "success");
@@ -288,10 +284,10 @@ public class ClassController extends Controller {
 		Teacher teacher = Teacher.dao.findById(clazz.get("tid"));
 		teacherList.add(teacher);
 		System.out.println("teacher: " + teacher.getStr("name"));
-		for(Teacher t : teacherList) {
+		for (Teacher t : teacherList) {
 			System.out.println("t: " + t.getStr("name"));
 		}
-		
+
 		setAttr("teacherList", teacherList);
 
 		setAttr("class", clazz);
@@ -340,7 +336,7 @@ public class ClassController extends Controller {
 	}
 
 	/**
-	 * 删除科室信息
+	 * 删除班级信息
 	 */
 	public void delete() {
 		int classId = ParaKit.paramToInt(getPara(0), -1);

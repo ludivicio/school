@@ -35,11 +35,6 @@ public class ScoreController extends Controller {
 
 	public void index() {
 
-		render("index.html");
-	}
-
-	public void add() {
-
 		redirect("search.html");
 	}
 
@@ -57,24 +52,23 @@ public class ScoreController extends Controller {
 		School curSchool = null;
 		Term curTerm = null;
 		Class curClass = null;
-		
+
 		Admin admin = getSessionAttr("admin");
 		setAttr("admin", admin);
-		
-		if(admin.getInt("rid") == 3) {
+
+		if (admin.getInt("rid") == 3) {
 			int teacherId = admin.getInt("tid");
-			
+
 			Teacher teacher = Teacher.dao.findById(teacherId);
 			curSchool = teacher.getSchool();
 			curClass = teacher.getClazz();
 			curTerm = Term.dao.getLastTerm();
-			
-		}else if(admin.getInt("rid") == 1 ) {
+
+		} else if (admin.getInt("rid") == 1) {
 			int tid = ParaKit.paramToInt(getPara("tid"), -1);
 			int sid = ParaKit.paramToInt(getPara("sid"), -1);
 			int cid = ParaKit.paramToInt(getPara("cid"), -1);
-			
-			
+
 			// 查询该学校的所有班级
 			List<Class> classList = Class.dao.getClassesBySchoolId(sid);
 			setAttr("classList", classList);
@@ -83,19 +77,19 @@ public class ScoreController extends Controller {
 			curSchool = School.dao.findById(sid);
 			curClass = Class.dao.findById(cid);
 		}
-		
+
 		if (curClass == null) {
 			render("add.html");
 			return;
 		}
-		
+
 		// 查询该班级下的所有学生信息
-		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE, curClass.getInt("id"));
+		Page<Student> studentList = Student.dao.paginate(page, Constants.PAGE_SIZE,
+				curClass.getInt("id"));
 		setAttr("studentList", studentList);
 
 		// 获取该学期下该班级的所有课程信息
-		
-		
+
 		String end = curTerm.getStr("end");
 
 		System.out.println("end: " + end);
@@ -221,24 +215,6 @@ public class ScoreController extends Controller {
 
 		setAttr("status", "success");
 		renderJson();
-	}
-
-	/**
-	 * 跳转编辑页面
-	 * 
-	 */
-	public void edit() {
-
-		render("add.html");
-	}
-
-	/**
-	 * 删除科室信息
-	 */
-	public void delete() {
-
-		redirect("index.html");
-
 	}
 
 }

@@ -28,6 +28,20 @@ public class Student extends Model<Student> {
 	}
 
 	/**
+	 * 根据uuid,name,identity来获取学生信息
+	 * 
+	 * @param uuid
+	 * @param name
+	 * @param identity
+	 * @return
+	 */
+	public Student getStudent(String uuid, String name, String identity) {
+		return Student.dao.findFirst(
+				"select * from student where uuid = ? and name = ? and identity = ?", uuid, name,
+				identity);
+	}
+
+	/**
 	 * 获取该学生某个学期某个课程的成绩
 	 * 
 	 * @param tid
@@ -35,16 +49,17 @@ public class Student extends Model<Student> {
 	 * @return
 	 */
 	public String getScore(int tid, int cid) {
-		
+
 		System.out.println("tid: " + tid + " cid: " + cid);
-		
-		Integer score = Db.queryInt("select score from score where sid = ? and tid = ? and cid = ? ", get("id"),
-				tid, cid);
-		
-		if(score == null) {
+
+		Integer score = Db.queryInt(
+				"select score from score where sid = ? and tid = ? and cid = ? ", get("id"), tid,
+				cid);
+
+		if (score == null) {
 			return "";
 		}
-		
+
 		return score.toString();
 	}
 

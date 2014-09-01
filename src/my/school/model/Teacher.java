@@ -15,6 +15,8 @@ public class Teacher extends Model<Teacher> {
 
 	private School school;
 
+	private Role role;
+
 	public static final Teacher dao = new Teacher();
 
 	/**
@@ -58,6 +60,20 @@ public class Teacher extends Model<Teacher> {
 	}
 
 	/**
+	 * 根据uuid,name,identity来获取教师信息
+	 * 
+	 * @param uuid
+	 * @param name
+	 * @param identity
+	 * @return
+	 */
+	public Teacher getTeacher(String uuid, String name, String identity) {
+		return Teacher.dao.findFirst(
+				"select * from teacher where uuid = ? and name = ? and identity = ?", uuid, name,
+				identity);
+	}
+
+	/**
 	 * 获取班级信息
 	 * 
 	 * @return
@@ -90,6 +106,24 @@ public class Teacher extends Model<Teacher> {
 
 	public void setSchool(School school) {
 		this.school = school;
+	}
+
+	/**
+	 * 获取该教师的角色
+	 * 
+	 * @return
+	 */
+	public Role getRole() {
+
+		if (role == null) {
+			role = Role.dao.findById(get("rid"));
+		}
+
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 }
