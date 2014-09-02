@@ -162,7 +162,7 @@ public class SchoolController extends Controller {
 			school.update();
 		}
 
-		redirect("index.html");
+		redirect("/admin/school/index.html");
 	}
 
 	/**

@@ -88,7 +88,7 @@
 					<ul>
 						<# for( p in permission.subPermissions ) { #>
 						<li>
-							<a href="${p.url}">${p.name}</a>
+							<a href="${CONTEXT_PATH}${p.url}">${p.name}</a>
 						</li>
 						<# } #>
 					</ul>

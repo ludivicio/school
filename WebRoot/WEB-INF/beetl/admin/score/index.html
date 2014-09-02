@@ -96,7 +96,7 @@
 							<td>${student.name}</td>
 						<# for(course in courseList!) { #>
 							<td>
-								<input type="text" class="form-control input-sm" name="s_${student.id}_${course.id}" value="${@student.getScore(curTerm.id, course.id)}" />
+								<input type="text" class="form-control input-sm" name="s_${student.id}_${course.id}" value="${@student.getScore(curTerm.id, course.id)}" placeholder="${course.name}"/>
 							</td>
 						<# } #>
 							<td align="center">

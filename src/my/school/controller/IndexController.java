@@ -82,7 +82,7 @@ public class IndexController extends Controller {
 			setSessionAttr("roleName", role.getStr("name"));
 			setSessionAttr("permissions", permissions);
 
-			redirect("index.html");
+			redirect("/admin/index.html");
 
 		} else {
 
@@ -102,7 +102,7 @@ public class IndexController extends Controller {
 		getSession().removeAttribute("admin");
 		getSession().removeAttribute("roleName");
 		getSession().removeAttribute("permissions");
-		redirect("login.html");
+		redirect("/admin/login.html");
 	}
 
 }

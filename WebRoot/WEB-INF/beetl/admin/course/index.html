@@ -15,7 +15,7 @@
 <div class="row">
 	<div class="col-md-12">
 	
-		<form class="form-inline" action="/admin/course/search" method="post" role="form">
+		<form class="form-inline" action="${CONTEXT_PATH}/admin/course/search" method="post" role="form">
 		  	
 		  	<div class="form-group">
 		    	<div class="input-group">
@@ -69,9 +69,9 @@
 							<td>${strutil.subStringTo(course.remark!, 0, 20)}...</td> 
 						
 							<td align="center">
-								<a href="/admin/course/edit/${course.id!}">编辑</a>
+								<a href="${CONTEXT_PATH}/admin/course/edit/${course.id!}">编辑</a>
 								&nbsp;&nbsp;
-								<a href="javascript:void(0)" onclick="del('/admin/course/delete/${course.id!}')">删除</a>
+								<a href="javascript:void(0)" onclick="del('${CONTEXT_PATH}/admin/course/delete/${course.id!}')">删除</a>
 							</td>
 						</tr>
 						

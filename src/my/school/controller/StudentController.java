@@ -197,7 +197,7 @@ public class StudentController extends Controller {
 			student.update();
 		}
 
-		redirect("index.html");
+		redirect("/admin/student/index.html");
 	}
 
 	/**

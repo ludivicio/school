@@ -35,7 +35,7 @@ public class ScoreController extends Controller {
 
 	public void index() {
 
-		redirect("search.html");
+		redirect("/admin/score/search.html");
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class ScoreController extends Controller {
 		}
 
 		if (curClass == null) {
-			render("add.html");
+			render("index.html");
 			return;
 		}
 
@@ -114,7 +114,7 @@ public class ScoreController extends Controller {
 
 		if (gid < 1) {
 
-			render("add.html");
+			render("index.html");
 
 			return;
 		}
@@ -131,7 +131,7 @@ public class ScoreController extends Controller {
 		setAttr("curSchool", curSchool);
 		setAttr("curClass", curClass);
 
-		render("add.html");
+		render("index.html");
 
 	}
 

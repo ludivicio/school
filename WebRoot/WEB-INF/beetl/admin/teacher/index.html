@@ -15,7 +15,7 @@
 <div class="row">
 	<div class="col-md-12">
 	
-		<form class="form-inline" action="/admin/teacher/search" method="post" role="form">
+		<form class="form-inline" action="${CONTEXT_PATH}/admin/teacher/search" method="post" role="form">
 		  	
 		  	<div class="form-group">
 		    	<div class="input-group">
@@ -94,9 +94,9 @@
 							<td>${teacher.phone!}</td>
 							<td>${teacher.status! == 0 ? "在职" : teacher.education! == 1 ? "退休" : "休假"}</td>
 							<td align="center">
-								<a href="/admin/teacher/edit/${teacher.id!}">编辑</a>
+								<a href="${CONTEXT_PATH}/admin/teacher/edit/${teacher.id!}">编辑</a>
 								&nbsp;&nbsp;
-								<a href="javascript:void(0)" onclick="del('/admin/teacher/delete/${teacher.id!}')">删除</a>
+								<a href="javascript:void(0)" onclick="del('${CONTEXT_PATH}/admin/teacher/delete/${teacher.id!}')">删除</a>
 							</td>
 						</tr>
 						

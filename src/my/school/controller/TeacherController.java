@@ -165,7 +165,7 @@ public class TeacherController extends Controller {
 			teacher.update();
 		}
 
-		redirect("index.html");
+		redirect("/admin/teacher/index.html");
 	}
 
 	/**

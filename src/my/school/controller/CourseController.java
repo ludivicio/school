@@ -128,7 +128,8 @@ public class CourseController extends Controller {
 		} else {
 			course.update();
 		}
-		redirect("index.html");
+		
+		redirect("/admin/course/index.html");
 	}
 
 	/**

@@ -96,9 +96,9 @@
 							<td>${student.phone!}</td>
 							<td>${student.status! == 0 ? "在校" : student.status! == 1 ? "退学" : "休学" }</td>
 							<td align="center">
-								<a href="/admin/student/edit/${student.id!}">编辑</a>
+								<a href="${CONTEXT_PATH}/admin/student/edit/${student.id!}">编辑</a>
 								&nbsp;&nbsp;
-								<a href="javascript:void(0)" onclick="del('/admin/student/delete/${student.id!}')">删除</a>
+								<a href="javascript:void(0)" onclick="del('${CONTEXT_PATH}/admin/student/delete/${student.id!}')">删除</a>
 							</td>
 						</tr>
 						
